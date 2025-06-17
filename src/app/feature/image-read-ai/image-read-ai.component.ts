@@ -1,0 +1,43 @@
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
+import { finalize } from 'rxjs';
+import { ChatService } from 'src/app/services/chat-services';
+
+@Component({
+  selector: 'app-image-read-ai',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './image-read-ai.component.html',
+  styleUrl: './image-read-ai.component.css',
+})
+export class ImageReadAiComponent {
+  constructor(private chatService: ChatService) {}
+  imageSrc: string | ArrayBuffer | null = null;
+  responseText: string = '';
+  imageQuestion: string  = '';
+  base64Image: string = '';
+  isLoading: boolean = false;
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imageSrc = reader.result;
+        this.base64Image = (this.imageSrc as string).split(',')[1];
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  sendMessage()
+  {
+        this.isLoading = true;
+        this.chatService.getGeminiImageRead(this.base64Image, this.imageQuestion)
+                          .pipe(finalize(() => this.isLoading = false))
+                          .subscribe(res => this.responseText = this.chatService.formatGeminiContent(res || '') );
+  }
+
+}
