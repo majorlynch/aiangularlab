@@ -62,7 +62,6 @@ export class ChatService {
     aiHistory: TextPrompt[],
     returnMockText?: boolean
   ): Observable<string> {
-    console.log(environment.apiKeyGemini);
     if (!returnMockText)
     {
       return from(
@@ -72,7 +71,7 @@ export class ChatService {
     else
      {
       return from(
-        this.mockChatService.getGeminiChat(chatPrompt, userHistory, aiHistory)
+        this.mockChatService.getMockResponse()
       );
      }
   }
@@ -121,10 +120,10 @@ export class ChatService {
 
   getDeepseekChat(chatPrompt: string, chatHistory: ChatHistory[], returnMockText?: boolean
   ): Observable<string> {
-    if (returnMockText)
-      return this.mockChatService.getDeepSeekChat(chatPrompt, chatHistory)
-    else
+    if (!returnMockText)
       return from(this.getDeepseekChatPromise(chatPrompt, chatHistory));
+    else
+     return this.mockChatService.getMockResponse()
   }
 
   getContactData(): Observable<aiDetail[]> {
@@ -137,6 +136,11 @@ export class ChatService {
       {
         aiName: AI_NAMES.DEEPSEEK,
         aiImage: 'assets/images/deepseek.png',
+        aiOnlineStatus: 'online',
+      },
+      {
+        aiName: AI_NAMES.MISTRAL,
+        aiImage: 'assets/images/mistral.png',
         aiOnlineStatus: 'online',
       },
     ]);

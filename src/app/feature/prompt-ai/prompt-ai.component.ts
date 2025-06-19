@@ -9,7 +9,7 @@ import { finalize, tap } from 'rxjs';
   selector: 'app-google-ai',
   standalone: true,
   providers: [],
-  imports: [CommonModule, HeaderComponent, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './prompt-ai.component.html',
   styleUrl: './prompt-ai.component.css',
 })
@@ -17,25 +17,34 @@ export class PromptAiComponent {
   prompt: string = '';
   aiGeminiResponse: string = '';
   aiDeepSeekResponse: string = '';
+  aiMistralResponse: string = '';
   isLoadingGemini = false;
   isLoadingDeepseek = false;
+  isLoadingMistral = false;
 
   constructor(private PromptService: PromptService) {}
 
   getResponse() {
     this.aiGeminiResponse = '';
     this.aiDeepSeekResponse = '';
+    this.aiMistralResponse = '';
     this.isLoadingGemini = true;
     this.isLoadingDeepseek = true;
+    this.isLoadingMistral = true;
     this.PromptService.getGeminiResponse(this.prompt)
     .pipe(finalize(() => this.isLoadingGemini = false))
-    .subscribe(res => this.aiGeminiResponse = res
-    );
+    .subscribe(res => this.aiGeminiResponse = res || '');
 
     this.PromptService.getDeepseekResponse(this.prompt)
     .pipe(tap(res => console.log(res)),
           finalize(() => this.isLoadingDeepseek = false))
     .subscribe(res => this.aiDeepSeekResponse = res
+    );
+
+    this.PromptService.getMistralResponse(this.prompt)
+    .pipe(tap(res => console.log(res)),
+          finalize(() => this.isLoadingMistral = false))
+    .subscribe(res => this.aiMistralResponse = res
     );
   }
 }

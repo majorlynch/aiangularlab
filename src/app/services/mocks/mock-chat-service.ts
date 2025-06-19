@@ -13,14 +13,9 @@ export class MockChatService {
     constructor() {
     }
 
-    getGeminiChat(chatPrompt: string,userHistory: TextPrompt[],aiHistory: TextPrompt[])
+    getMockResponse()
     {
-              const sampleText = 'This is sampletext';
-              return from([sampleText]);
+      const sampleText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+      return from([sampleText]);
     }
-
-      getDeepSeekChat(chatPrompt: string, chatHistory: ChatHistory[]): Observable<string> {
-          const sampleText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
-          return from([sampleText]);
-      }
 }

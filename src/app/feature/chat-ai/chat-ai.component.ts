@@ -18,6 +18,8 @@ import { FormsModule } from '@angular/forms';
 import { catchError, finalize, throwError } from 'rxjs';
 import { aiDetail } from '../../shared/models/messageBase';
 import { AI_NAMES } from '@enums/ainame.enum';
+import { CHATSYMBOLGROUPS } from 'src/app/shared/constants/chatSymbols';
+
 
 @Component({
   selector: 'app-chat-ai',
@@ -40,6 +42,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
   useMock:boolean = false;
   errorMessage: string = '';
   allowCarraigeReturn: boolean = false;
+  chatSymbolGroups:string[][];
 
   constructor(
     private chatService: ChatService,
@@ -47,6 +50,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
     private ngZone: NgZone
   ) {
     this.cdRef.detach();
+    this.chatSymbolGroups = CHATSYMBOLGROUPS;
   }
 
   ngOnInit() {
@@ -63,6 +67,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
       },
     ];
     this.cdRef.detectChanges();
+
   }
 
   ngAfterViewChecked(): void {
@@ -209,11 +214,6 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
       this.sendMessage();
   }
 
-  closeError()
-  {
-    alert('closing that error');
-  }
-
   toggleCarriageReturn()
   {
     this.allowCarraigeReturn = !this.allowCarraigeReturn;
@@ -221,6 +221,15 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
     console.log(this.allowCarraigeReturn);
   }
 
+  closeErrorMessage()
+  {
+    this.errorMessage = '';
+  }
 
+  addSymbol(text: string)
+  {
+    this.chatPrompt += text;
+    this.cdRef.detectChanges();
+  }
 }
 

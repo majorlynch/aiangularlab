@@ -1,15 +1,15 @@
 import { environment } from '../../environments/environment';
 import { Injectable } from '@angular/core';
 import { from, Observable } from 'rxjs';
-import { GoogleGenAI } from '@google/genai';
+import { GenerateContentResponse, GoogleGenAI } from '@google/genai';
 import { OpenAI } from 'openai';
+import { Mistral } from '@mistralai/mistralai';
+import { MockChatService } from './mocks/mock-chat-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PromptService {
-  constructor() {}
-  response: any;
 
   //Gemini
   ai = new GoogleGenAI({
@@ -23,39 +23,57 @@ export class PromptService {
     apiKey: environment.apiKeyDeepSeek
   });
 
-  async getGeminiResponsePromise(prompt: string): Promise<string> {
+  //Mistral
+  mistralClient = new Mistral({apiKey: environment.apiKeyMistral});
 
-    try {
-      this.response = await this.ai.models.generateContent({
+  constructor(private mockChatService: MockChatService) {}
+
+  async getGeminiResponsePromise(prompt: string): Promise<string | undefined> {
+    const response: GenerateContentResponse = await this.ai.models.generateContent({
         model: 'gemini-2.0-flash',
         contents: prompt,
       });
-    } catch (e) {
-      console.log(e);
-    }
-    return this.response.text;
+
+    return response.text;
   }
 
-  getGeminiResponse(prompt: string): Observable<string> {
-    return from(this.getGeminiResponsePromise(prompt));
+  getGeminiResponse(prompt: string, returnMockText?: boolean): Observable<string | undefined> {
+    if (!returnMockText)
+      return from(this.getGeminiResponsePromise(prompt));
+    else
+      return this.mockChatService.getMockResponse();
   }
 
   async getDeepSeekResponsePromise(prompt: string): Promise<string> {
-    const completion = await this.openai.chat.completions.create({
+    const response = await this.openai.chat.completions.create({
       messages: [{ role: "system", content: prompt }],
       model: "deepseek-chat"
     });
 
-    return (completion.choices[0].message.content!);
+    return (response.choices[0].message.content!);
   }
 
-  getDeepseekResponse(prompt: string, returnSampleText?: boolean): Observable<string> {
-    if (returnSampleText) {
-      const sampleText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
-      return from([sampleText]);
-    }
-    else
+  getDeepseekResponse(prompt: string, returnMockText?: boolean): Observable<string> {
+    if (!returnMockText)
       return from(this.getDeepSeekResponsePromise(prompt));
+    else
+      return this.mockChatService.getMockResponse();
   }
 
+
+  async getMistralResponsePromise(prompt: string): Promise<string> {
+    const chatResponse = await this.mistralClient.chat.complete({
+        model: "mistral-large-latest",
+        messages: [{role: 'user', content: prompt}]
+    });
+    return (chatResponse.choices?.[0]?.message?.content as string);
+  }
+
+  getMistralResponse(prompt: string, returnMockText?: boolean): Observable<string> {
+    if (!returnMockText)
+      return from(this.getMistralResponsePromise(prompt));
+    else
+      return this.mockChatService.getMockResponse();
+
+  }
 }

@@ -3,7 +3,7 @@
     <div class="col-sm-6 mx-auto mt-5">
       <div class="card">
         <div class="card-body bg-light bg-gradient">
-          <h5 class="card-title">Ask Gemini AI</h5>
+          <h5 class="card-title">Compare AI Responses</h5>
           <div class="mb-3">
             <label for="prompt" class="form-label">Prompt</label>
             <input
@@ -26,7 +26,7 @@
     <div class="row">
       <div class="col-sm-4 mx-auto">
         <div class="card">
-          <h5 class="card-header">Gemini AI Response</h5>
+          <h5 class="card-header"><img class="aiImage" src="assets/images/gemini.png"/> Gemini AI Response</h5>
           <div class="card-body text-start">
             <div *ngIf="!isLoadingGemini" style="white-space: pre-wrap">
               <label class="form-label">Response</label>
@@ -40,13 +40,27 @@
       </div>
       <div class="col-sm-4 container-fluid">
         <div class="card">
-          <h5 class="card-header">DeepSeek AI Response</h5>
+          <h5 class="card-header"><img class="aiImage" src="assets/images/deepseek.png"/>  DeepSeek AI Response</h5>
           <div class="card-body text-start">
             <div *ngIf="!isLoadingDeepseek" style="white-space: pre-wrap">
               <label class="form-label">Response</label>
               <p class="card-text">{{ aiDeepSeekResponse }}</p>
             </div>
             <div *ngIf="isLoadingDeepseek" class="spinner-border block" role="status">
+              <span class="sr-only"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-4 container-fluid">
+        <div class="card">
+          <h5 class="card-header"><img class="aiImage" src="assets/images/mistral.png"/> Mistral AI Response</h5>
+          <div class="card-body text-start">
+            <div *ngIf="!isLoadingMistral" style="white-space: pre-wrap">
+              <label class="form-label">Response</label>
+              <p class="card-text">{{ aiMistralResponse }}</p>
+            </div>
+            <div *ngIf="isLoadingMistral" class="spinner-border block" role="status">
               <span class="sr-only"></span>
             </div>
           </div>

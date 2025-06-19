@@ -99,11 +99,6 @@ dy{
     height: 40px;
     position: absolute;
 }
-.chat .avatar img {
-    display: block;
-    border-radius: 20px;
-    height: 100%;
-}
 .chat-body
 {
   width: 100%; /* Set width */
@@ -238,15 +233,15 @@ dy{
 }
 
 .chat input:-moz-placeholder { /* Firefox 18- */
-   color: #fff;  
+   color: #fff;
 }
 
 .chat input::-moz-placeholder {  /* Firefox 19+ */
-   color: #fff;  
+   color: #fff;
 }
 
-.chat input:-ms-input-placeholder {  
-   color: #fff;  
+.chat input:-ms-input-placeholder {
+   color: #fff;
 }
 .chat input {
     -webkit-appearance: none;

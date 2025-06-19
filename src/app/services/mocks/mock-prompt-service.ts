@@ -19,4 +19,10 @@ export class MockPromptService {
       const sampleText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
       return from([sampleText]);
     }
+
+    getMistralResponse(prompt: string): Observable<string>
+    {
+      const sampleText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+      return from([sampleText]);
+    }
 }
