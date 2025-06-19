@@ -7,6 +7,6 @@ export const routes: Routes = [
   { path: 'aiangularlab', redirectTo: 'chat', pathMatch: 'full' },
   { path: 'chat', title: 'AI Chat', component: ChatAiComponent },
   { path: 'ai', title: 'AI Prompt', component: PromptAiComponent },
-  { path: 'image', title: 'AI Image', component: ImageReadAiComponent },
+  { path: 'image', title: 'Gemini Image Reader', component: ImageReadAiComponent },
   { path: '', redirectTo: '/chat', pathMatch: 'full' },
 ];

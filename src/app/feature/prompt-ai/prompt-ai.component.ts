@@ -21,6 +21,12 @@ export class PromptAiComponent {
   isLoadingGemini = false;
   isLoadingDeepseek = false;
   isLoadingMistral = false;
+  geminiPosition: number = -1;
+  deepseekPosition: number = -1;
+  mistralPosition: number = -1;
+  position: number = 0;
+  medalArray:string[] = ['🥇','🥈','🥉'];
+
 
   constructor(private PromptService: PromptService) {}
 
@@ -32,18 +38,21 @@ export class PromptAiComponent {
     this.isLoadingDeepseek = true;
     this.isLoadingMistral = true;
     this.PromptService.getGeminiResponse(this.prompt)
-    .pipe(finalize(() => this.isLoadingGemini = false))
+    .pipe(finalize(() => {this.isLoadingGemini = false,
+                        this.geminiPosition = (this.position++) % 3}))
     .subscribe(res => this.aiGeminiResponse = res || '');
 
     this.PromptService.getDeepseekResponse(this.prompt)
     .pipe(tap(res => console.log(res)),
-          finalize(() => this.isLoadingDeepseek = false))
+          finalize(() => {this.isLoadingDeepseek = false,
+                          this.deepseekPosition = (this.position++) % 3}))
     .subscribe(res => this.aiDeepSeekResponse = res
     );
 
     this.PromptService.getMistralResponse(this.prompt)
     .pipe(tap(res => console.log(res)),
-          finalize(() => this.isLoadingMistral = false))
+          finalize(() => {this.isLoadingMistral = false,
+                          this.mistralPosition = (this.position++) % 3}))
     .subscribe(res => this.aiMistralResponse = res
     );
   }
