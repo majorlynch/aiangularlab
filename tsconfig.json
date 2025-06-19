@@ -4,7 +4,8 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@models/*":["src/app/shared/model/*"]
+      "@models/*":["src/app/shared/models/*"],
+      "@enums/*": ["src/app/shared/enums/*"]
     },
     "outDir": "./dist/out-tsc",
     "strict": true,

@@ -7,7 +7,7 @@
   <div>
   <div class="row">
     <div class="col-sm-6 mx-auto mt-3 p-2 border">
-        <h2 class="pb-2">Step 2 - Image Preview</h2>
+        <h2 class="pb-2">Image Preview</h2>
       <div class="preview-container">
         <img id="preview" *ngIf="imageSrc" [src]="imageSrc" class="img-fluid img-thumbnail rounded mx-auto d-block" alt="Image Preview" />
       </div>
@@ -15,7 +15,7 @@
   </div>
   <div class="row">
     <div class="col-sm-6 mx-auto mt-3 p-2 border" style="white-space: pre-wrap">
-        <h2 class="pb-2">Step 3 - Ask Question</h2>
+        <h2 class="pb-2">Step 2 - Ask Question</h2>
           <div class="input-group mb-3">
             <input type="text" class="form-control" [(ngModel)]="imageQuestion" placeholder="Ask a question" aria-label="Question about image" aria-describedby="sendMessageButton"
                 (keydown.enter)="sendMessage()">
@@ -25,7 +25,7 @@
   </div>
   <div class="row">
     <div class="col-sm-6 mx-auto mt-3 p-2 border" style="white-space: pre-wrap">
-        <h2 class="pb-2">Step 4 - Response</h2>
+        <h2 class="pb-2">Response</h2>
         <div [innerHTML]="responseText"></div>
 
         <div *ngIf="isLoading" class="spinner-border block" role="status">

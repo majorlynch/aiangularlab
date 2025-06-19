@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { from, Observable } from "rxjs";
 import { ChatService } from "../chat-services";
-import { ChatHistory, TextPrompt } from "@models/messageBase";
+import { ChatHistory, TextPrompt } from "src/app/shared/models/messageBase";
 
 
 @Injectable({

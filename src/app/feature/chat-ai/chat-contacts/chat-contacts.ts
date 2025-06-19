@@ -1,7 +1,7 @@
 import { Component, Input, Output, OnInit, EventEmitter } from "@angular/core";
 import { ChatService } from "../../../services/chat-services";
 import { CommonModule } from "@angular/common";
-import { aiDetail } from "../../../shared/model/messageBase";
+import { aiDetail } from "../../../shared/models/messageBase";
 
 @Component( {
     selector: 'app-chat-contacts',
@@ -14,7 +14,7 @@ import { aiDetail } from "../../../shared/model/messageBase";
 export class ChatAiContacts implements OnInit {
     @Input() selectedAI: string = '';
     @Output() setSelectedAi = new EventEmitter<string>();
-    
+
     aiList : aiDetail[] = [];
 
     constructor (private ChatService: ChatService) {}
@@ -29,7 +29,6 @@ export class ChatAiContacts implements OnInit {
 
     setSelectedContact(aiName: string) {
         this.setSelectedAi.emit(aiName);
-        
     }
 
-} 
+}

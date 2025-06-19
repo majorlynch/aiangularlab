@@ -2,7 +2,7 @@
           <div class="col-inside-lg decor-default chat p-4" style="overflow: hidden; outline: none;" tabindex="5000">
             <div class="chat-users">
               <h6>Contacts</h6>
-                <div *ngFor="let ai of aiList" class="user rounded" aria-live="polite"
+                <div *ngFor="let ai of aiList" class="user rounded border" aria-live="polite"
                      [ngStyle]="ai.aiName == selectedAI ? {'background-color': '#ECEFF5'} : null"
                      (click)="setSelectedContact(ai.aiName)">
                     <div class="avatar">

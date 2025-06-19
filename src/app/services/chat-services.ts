@@ -7,9 +7,10 @@ import {
   ChatHistory,
   MessageDetail,
   TextPrompt,
-} from '../shared/model/messageBase';
+} from '../shared/models/messageBase';
 import { OpenAI } from 'openai';
 import { MockChatService } from './mocks/mock-chat-service';
+import { AI_NAMES } from '@enums/ainame.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -129,12 +130,12 @@ export class ChatService {
   getContactData(): Observable<aiDetail[]> {
     return of([
       {
-        aiName: 'Gemini',
+        aiName: AI_NAMES.GEMINI,
         aiImage: 'assets/images/gemini.png',
         aiOnlineStatus: 'online',
       },
       {
-        aiName: 'Deepseek',
+        aiName: AI_NAMES.DEEPSEEK,
         aiImage: 'assets/images/deepseek.png',
         aiOnlineStatus: 'online',
       },

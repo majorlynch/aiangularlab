@@ -12,11 +12,12 @@ import {
   ChatContent,
   ChatHistory,
   MessageDetail,
-} from '../../shared/model/messageBase';
+} from '../../shared/models/messageBase';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { finalize } from 'rxjs';
-import { aiDetail } from '../../shared/model/messageBase';
+import { catchError, finalize, throwError } from 'rxjs';
+import { aiDetail } from '../../shared/models/messageBase';
+import { AI_NAMES } from '@enums/ainame.enum';
 
 @Component({
   selector: 'app-chat-ai',
@@ -26,7 +27,7 @@ import { aiDetail } from '../../shared/model/messageBase';
   styleUrl: './chat-ai.component.css',
   encapsulation: ViewEncapsulation.Emulated,
   providers: [HttpClient],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChatAiComponent implements AfterViewChecked, DoCheck {
   chatPrompt: string = '';
@@ -37,6 +38,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
   chatContent: ChatContent[] = [];
   isChatLoading: boolean = false;
   useMock:boolean = false;
+  errorMessage: string = '';
 
   constructor(
     private chatService: ChatService,
@@ -48,14 +50,14 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
 
   ngOnInit() {
     this.chatService.getContactData().subscribe((res) => (this.aiList = res));
-    this.selectedAI = this.aiList.find((r) => r.aiName == 'Gemini');
+    this.selectedAI = this.aiList.find((r) => r.aiName == AI_NAMES.GEMINI);
     this.chatContent = [
       {
-        aiName: 'Gemini',
+        aiName: AI_NAMES.GEMINI,
         messageDetail: [],
       },
       {
-        aiName: 'Deepseek',
+        aiName: AI_NAMES.DEEPSEEK,
         messageDetail: [],
       },
     ];
@@ -89,7 +91,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
     this.displayMessages = [...this.displayMessages, ...newUserMessage];
     this.cdRef.detectChanges();
 
-    if (this.selectedAI?.aiName == 'Gemini') {
+    if (this.selectedAI?.aiName == AI_NAMES.GEMINI) {
       const userHistory = this.displayMessages
         .filter((r) => r.userType == 'user')
         .map((r) => ({ text: r.messageDetail }));
@@ -100,6 +102,13 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
       this.chatService
         .getGeminiChat(this.chatPrompt, userHistory, aiHistory)
         .pipe(
+          catchError((error) => {
+            if (error.status === 0)
+              this.errorMessage = 'Network or CORS error occurred.';
+            else
+              this.errorMessage = `Error ${error.status}: ${error.message}`;
+            return throwError(() => error);
+          }),
           finalize(() => {
             const newResponseMessage: MessageDetail[] = [
               {
@@ -135,7 +144,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
       }
           );
 
-    } else if (this.selectedAI?.aiName == 'Deepseek') {
+    } else if (this.selectedAI?.aiName == AI_NAMES.DEEPSEEK) {
       const chatHistory: ChatHistory[] = this.displayMessages.map(
         ({ userType, messageDetail }) => ({
           role: userType,
@@ -146,6 +155,13 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
       this.chatService
         .getDeepseekChat(this.chatPrompt, chatHistory)
         .pipe(
+          catchError((error) => {
+            if (error.status === 0)
+              this.errorMessage = 'Network or CORS error occurred.';
+            else
+              this.errorMessage = `Error ${error.status}: ${error.message}`;
+            return throwError(() => error);
+          }),
           finalize(() => {
             const newResponseMessage: MessageDetail[] = [
               {
@@ -186,6 +202,10 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
     this.cdRef.detectChanges();
   }
 
+  onCloseError()
+  {
+    alert('closing that error');
+  }
 
 
 }
