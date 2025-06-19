@@ -19,6 +19,16 @@ export class ImageReadAiComponent {
   base64Image: string = '';
   isLoading: boolean = false;
 
+  samplePrompts: string[] = [
+    "What can you tell me about this image?",
+    "Tell me as much as you can about this image",
+    "Can you describe the setting and the people or objects?",
+    "Is this image from a specific place or event?",
+    "What text can you read in this image?",
+    "Does this image seem edited or AI-generated?"
+    ];
+
+
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -38,6 +48,10 @@ export class ImageReadAiComponent {
         this.chatService.getGeminiImageRead(this.base64Image, this.imageQuestion)
                           .pipe(finalize(() => this.isLoading = false))
                           .subscribe(res => this.responseText = this.chatService.formatGeminiContent(res || '') );
+  }
+
+  setSuggestedMessage(prompt: string) {
+    this.imageQuestion = prompt;
   }
 
 }

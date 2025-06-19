@@ -30,7 +30,7 @@
               class="btn-close"
               data-bs-dismiss="alert"
               aria-label="Close"
-              (click)="onCloseError()"
+              (click)="closeError()"
             ></button>
           </div>
         </div>
@@ -68,15 +68,25 @@
             </div>
           </div>
           <div class="input-group mb-3">
-            <input
+            <textarea
               type="text"
               class="form-control"
               [(ngModel)]="chatPrompt"
               placeholder="Write a message"
               aria-label="Recipient's username"
               aria-describedby="sendMessageButton"
-              (keydown.enter)="sendMessage()"
-            />
+              (keydown.enter)="messageCarraigeReturn()"
+            ></textarea>
+            <button
+              type="button"
+              data-toggle="button"
+              id="toogleCarraigeReturn"
+              [ngClass]="[allowCarraigeReturn ? 'btn bg-secondary' : 'btn btn-outline-secondary']"
+              (click)="toggleCarriageReturn()"
+              [disabled]="isChatLoading"
+            >
+              <i class="bi bi bi-arrow-return-left"></i>
+            </button>
             <button
               class="btn btn-outline-secondary"
               type="button"

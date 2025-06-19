@@ -21,6 +21,11 @@
                 (keydown.enter)="sendMessage()">
             <button class="btn btn-outline-secondary" type="button" id="sendMessageButton" (click)="sendMessage()" [disabled]="isLoading"><i class="bi bi-send"></i></button>
           </div>
+          <div class="container-fluid">
+            <button *ngFor="let prompt of samplePrompts" class="btn btn-outline-primary rounded-pill custom-small-text m-1" (click)="setSuggestedMessage(prompt)">
+              {{prompt}}
+            </button>
+          </div>
     </div>
   </div>
   <div class="row">

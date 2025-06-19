@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { of, from, Observable } from 'rxjs';
+import { of, from, Observable, throwError } from 'rxjs';
 import { createPartFromBase64, createUserContent, GenerateContentResponse, GoogleGenAI } from '@google/genai';
 import {
   aiDetail,

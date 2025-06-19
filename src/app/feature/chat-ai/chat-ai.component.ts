@@ -39,6 +39,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
   isChatLoading: boolean = false;
   useMock:boolean = false;
   errorMessage: string = '';
+  allowCarraigeReturn: boolean = false;
 
   constructor(
     private chatService: ChatService,
@@ -130,6 +131,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
               (r) => r.aiName == this.selectedAI!.aiName
             )[0].messageDetail = this.displayMessages;
             this.isChatLoading = false;
+            this.chatPrompt = '';
             this.cdRef.detectChanges();
           })
         )
@@ -202,9 +204,21 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
     this.cdRef.detectChanges();
   }
 
-  onCloseError()
+  messageCarraigeReturn() {
+    if (!this.allowCarraigeReturn)
+      this.sendMessage();
+  }
+
+  closeError()
   {
     alert('closing that error');
+  }
+
+  toggleCarriageReturn()
+  {
+    this.allowCarraigeReturn = !this.allowCarraigeReturn;
+    this.cdRef.detectChanges();
+    console.log(this.allowCarraigeReturn);
   }
 
 

@@ -7,3 +7,6 @@
   display:block;
   margin: 10px 0;
 }
+.custom-small-text {
+  font-size: 0.8rem
+}
