@@ -211,10 +211,6 @@ dy{
     -webkit-appearance: none;
     border-radius: 0;
 }
-.chat-body .answer-add .answer-btn-1 {
-    background: url("http://91.234.35.26/iwiki-admin/v1.0.0/admin/img/icon-40.png") 50% 50% no-repeat;
-    right: 56px;
-}
 .chat-body .answer-add .answer-btn {
     display: block;
     cursor: pointer;
@@ -223,10 +219,6 @@ dy{
     position: absolute;
     top: 50%;
     margin-top: -18px;
-}
-.chat-body .answer-add .answer-btn-2 {
-    background: url("http://91.234.35.26/iwiki-admin/v1.0.0/admin/img/icon-41.png") 50% 50% no-repeat;
-    right: 20px;
 }
 .chat input::-webkit-input-placeholder {
    color: #fff;

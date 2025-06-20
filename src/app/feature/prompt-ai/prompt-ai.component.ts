@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { PromptService } from '../../services/prompt-ai.service';
 import { Component } from '@angular/core';
-import { HeaderComponent } from '../../core/components/header/header.component';
 import { FormsModule } from '@angular/forms';
 import { finalize, tap } from 'rxjs';
+import { formatResponse } from '@utils/format-response.util';
 
 @Component({
   selector: 'app-google-ai',
@@ -46,14 +46,14 @@ export class PromptAiComponent {
     .pipe(tap(res => console.log(res)),
           finalize(() => {this.isLoadingDeepseek = false,
                           this.deepseekPosition = (this.position++) % 3}))
-    .subscribe(res => this.aiDeepSeekResponse = res
+    .subscribe(res => this.aiDeepSeekResponse = formatResponse(res)
     );
 
     this.PromptService.getMistralResponse(this.prompt)
     .pipe(tap(res => console.log(res)),
           finalize(() => {this.isLoadingMistral = false,
                           this.mistralPosition = (this.position++) % 3}))
-    .subscribe(res => this.aiMistralResponse = res
+    .subscribe(res => this.aiMistralResponse = formatResponse(res)
     );
   }
 }

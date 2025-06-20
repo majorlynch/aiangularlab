@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Component } from '@angular/core';
 import { finalize } from 'rxjs';
 import { ChatService } from 'src/app/services/chat-services';
+import { formatResponse } from '@utils/format-response.util';
 
 @Component({
   selector: 'app-image-read-ai',
@@ -47,7 +48,7 @@ export class ImageReadAiComponent {
         this.isLoading = true;
         this.chatService.getGeminiImageRead(this.base64Image, this.imageQuestion)
                           .pipe(finalize(() => this.isLoading = false))
-                          .subscribe(res => this.responseText = this.chatService.formatGeminiContent(res || '') );
+                          .subscribe(res => this.responseText = formatResponse(res || '') );
   }
 
   setSuggestedMessage(prompt: string) {

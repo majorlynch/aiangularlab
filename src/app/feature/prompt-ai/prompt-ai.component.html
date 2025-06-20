@@ -26,11 +26,11 @@
     <div class="row">
       <div class="col-sm-4 mx-auto">
         <div class="card">
-          <h5 class="card-header"><img class="aiImage" src="assets/images/gemini.png"/> Gemini AI Response {{medalArray[geminiPosition]}}</h5>
+          <h5 class="card-header"><img class="aiImage" src="assets/images/gemini.png"/> Gemini AI Response <span class="fs-3">{{medalArray[geminiPosition]}}</span></h5>
           <div class="card-body text-start">
             <div *ngIf="!isLoadingGemini" style="white-space: pre-wrap">
-              <label class="form-label">Response</label>
-              <p class="card-text">{{ aiGeminiResponse }}</p>
+              <label *ngIf="!aiGeminiResponse" class="form-label">Response</label>
+              <p class="card-text" [innerHTML]="aiGeminiResponse"></p>
             </div>
             <div *ngIf="isLoadingGemini" class="spinner-border block" role="status">
               <span class="sr-only"></span>
@@ -40,11 +40,11 @@
       </div>
       <div class="col-sm-4 container-fluid">
         <div class="card">
-          <h5 class="card-header"><img class="aiImage" src="assets/images/deepseek.png"/>  DeepSeek AI Response {{medalArray[deepseekPosition]}}</h5>
+          <h5 class="card-header"><img class="aiImage" src="assets/images/deepseek.png"/>  DeepSeek AI Response <span class="fs-3">{{medalArray[deepseekPosition]}}</span></h5>
           <div class="card-body text-start">
             <div *ngIf="!isLoadingDeepseek" style="white-space: pre-wrap">
-              <label class="form-label">Response</label>
-              <p class="card-text">{{ aiDeepSeekResponse }}</p>
+              <label *ngIf="!aiDeepSeekResponse" class="form-label">Response</label>
+              <p class="card-text" [innerHTML]="aiDeepSeekResponse"></p>
             </div>
             <div *ngIf="isLoadingDeepseek" class="spinner-border block" role="status">
               <span class="sr-only"></span>
@@ -54,11 +54,11 @@
       </div>
       <div class="col-sm-4 container-fluid">
         <div class="card">
-          <h5 class="card-header"><img class="aiImage" src="assets/images/mistral.png"/> Mistral AI Response {{medalArray[mistralPosition]}}</h5>
+          <h5 class="card-header"><img class="aiImage" src="assets/images/mistral.png"/> Mistral AI Response <span class="fs-3">{{medalArray[mistralPosition]}}</span></h5>
           <div class="card-body text-start">
             <div *ngIf="!isLoadingMistral" style="white-space: pre-wrap">
-              <label class="form-label">Response</label>
-              <p class="card-text">{{ aiMistralResponse }}</p>
+              <label *ngIf="!aiMistralResponse" class="form-label">Response</label>
+              <p class="card-text" [innerHTML]="aiMistralResponse"></p>
             </div>
             <div *ngIf="isLoadingMistral" class="spinner-border block" role="status">
               <span class="sr-only"></span>

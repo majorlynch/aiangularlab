@@ -1,8 +1,8 @@
 import { AfterViewChecked, Component, DoCheck } from '@angular/core';
 import {
   ViewEncapsulation,
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
+  //ChangeDetectionStrategy,
+  //ChangeDetectorRef,
   NgZone
 } from '@angular/core';
 import { ChatAiContacts } from './chat-contacts/chat-contacts';
@@ -18,8 +18,8 @@ import { FormsModule } from '@angular/forms';
 import { catchError, finalize, throwError } from 'rxjs';
 import { aiDetail } from '../../shared/models/messageBase';
 import { AI_NAMES } from '@enums/ainame.enum';
-import { CHATSYMBOLGROUPS } from 'src/app/shared/constants/chatSymbols';
-
+import { CHATSYMBOLGROUPS } from '@constants/chatSymbols';
+import { formatResponse } from '@utils/format-response.util';
 
 @Component({
   selector: 'app-chat-ai',
@@ -29,7 +29,7 @@ import { CHATSYMBOLGROUPS } from 'src/app/shared/constants/chatSymbols';
   styleUrl: './chat-ai.component.css',
   encapsulation: ViewEncapsulation.Emulated,
   providers: [HttpClient],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  //changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChatAiComponent implements AfterViewChecked, DoCheck {
   chatPrompt: string = '';
@@ -46,10 +46,10 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
 
   constructor(
     private chatService: ChatService,
-    private cdRef: ChangeDetectorRef,
+    //private cdRef: ChangeDetectorRef,
     private ngZone: NgZone
   ) {
-    this.cdRef.detach();
+    //this.cdRef.detach();
     this.chatSymbolGroups = CHATSYMBOLGROUPS;
   }
 
@@ -65,9 +65,12 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
         aiName: AI_NAMES.DEEPSEEK,
         messageDetail: [],
       },
+      {
+        aiName: AI_NAMES.MISTRAL,
+        messageDetail: [],
+      },
     ];
-    this.cdRef.detectChanges();
-
+    //this.cdRef.detectChanges();
   }
 
   ngAfterViewChecked(): void {
@@ -95,7 +98,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
       },
     ];
     this.displayMessages = [...this.displayMessages, ...newUserMessage];
-    this.cdRef.detectChanges();
+    //this.cdRef.detectChanges();
 
     if (this.selectedAI?.aiName == AI_NAMES.GEMINI) {
       const userHistory = this.displayMessages
@@ -113,6 +116,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
               this.errorMessage = 'Network or CORS error occurred.';
             else
               this.errorMessage = `Error ${error.status}: ${error.message}`;
+            this.isChatLoading = false;
             return throwError(() => error);
           }),
           finalize(() => {
@@ -137,12 +141,12 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
             )[0].messageDetail = this.displayMessages;
             this.isChatLoading = false;
             this.chatPrompt = '';
-            this.cdRef.detectChanges();
+            //this.cdRef.detectChanges();
           })
         )
         .subscribe({
           next: (res) => {
-            (chatResponse = this.chatService.formatGeminiContent(res)),
+            (chatResponse = formatResponse(res)),
             this.ngZone.runOutsideAngular(() => console.log(res))
           },
           error: (err) => {
@@ -151,7 +155,8 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
       }
           );
 
-    } else if (this.selectedAI?.aiName == AI_NAMES.DEEPSEEK) {
+    }
+    else if (this.selectedAI?.aiName == AI_NAMES.DEEPSEEK) {
       const chatHistory: ChatHistory[] = this.displayMessages.map(
         ({ userType, messageDetail }) => ({
           role: userType,
@@ -167,6 +172,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
               this.errorMessage = 'Network or CORS error occurred.';
             else
               this.errorMessage = `Error ${error.status}: ${error.message}`;
+            this.isChatLoading = false;
             return throwError(() => error);
           }),
           finalize(() => {
@@ -190,13 +196,61 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
               (r) => r.aiName == this.selectedAI!.aiName
             )[0].messageDetail = this.displayMessages;
             this.isChatLoading = false;
-            this.cdRef.detectChanges();
+            //this.cdRef.detectChanges();
           })
         )
         .subscribe(
-          (res) => (chatResponse = this.chatService.formatGeminiContent(res))
+          (res) => (chatResponse = formatResponse(res))
         );
     }
+    else if (this.selectedAI?.aiName == AI_NAMES.MISTRAL) {
+      const chatHistory: ChatHistory[] = this.displayMessages.map(
+        ({ userType, messageDetail }) => ({
+          role: userType,
+          content: messageDetail,
+        })
+      );
+
+      this.chatService
+        .getMistralChat(this.chatPrompt, chatHistory)
+        .pipe(
+          catchError((error) => {
+            if (error.status === 0)
+              this.errorMessage = 'Network or CORS error occurred.';
+            else
+              this.errorMessage = `Error ${error.status}: ${error.message}`;
+            this.isChatLoading = false;
+            return throwError(() => error);
+          }),
+          finalize(() => {
+            const newResponseMessage: MessageDetail[] = [
+              {
+                userId: 2,
+                userName: this.selectedAI!.aiName,
+                userImage: this.selectedAI!.aiImage,
+                userStatus: 'online',
+                userType: 'assistant',
+                messageDetail: `${chatResponse}`,
+                messageTime: new Date(),
+                messageTimeText: new Date().toLocaleString('en-GB'),
+              },
+            ];
+            this.displayMessages = [
+              ...this.displayMessages,
+              ...newResponseMessage,
+            ];
+            this.chatContent.filter(
+              (r) => r.aiName == this.selectedAI!.aiName
+            )[0].messageDetail = this.displayMessages;
+            this.isChatLoading = false;
+            //this.cdRef.detectChanges();
+          })
+        )
+        .subscribe(
+          (res) => (chatResponse = formatResponse(res))
+        );
+    }
+
   }
 
   setSelectedAi(newSelectedAI: string) {
@@ -206,7 +260,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
         .flatMap((r) => r.messageDetail);
     this.selectedAI = this.aiList.filter((r) => r.aiName == newSelectedAI)[0];
     this.chatPrompt = '';
-    this.cdRef.detectChanges();
+    //this.cdRef.detectChanges();
   }
 
   messageCarraigeReturn() {
@@ -217,7 +271,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
   toggleCarriageReturn()
   {
     this.allowCarraigeReturn = !this.allowCarraigeReturn;
-    this.cdRef.detectChanges();
+    //this.cdRef.detectChanges();
     console.log(this.allowCarraigeReturn);
   }
 
@@ -229,7 +283,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
   addSymbol(text: string)
   {
     this.chatPrompt += text;
-    this.cdRef.detectChanges();
+    //this.cdRef.detectChanges();
   }
 }
 

@@ -5,7 +5,9 @@
     "baseUrl": "./",
     "paths": {
       "@models/*":["src/app/shared/models/*"],
-      "@enums/*": ["src/app/shared/enums/*"]
+      "@enums/*": ["src/app/shared/enums/*"],
+      "@utils/*": ["src/app/shared/utils/*"],
+      "@constants/*": ["src/app/shared/constants/*"]
     },
     "outDir": "./dist/out-tsc",
     "strict": true,
