@@ -14,6 +14,7 @@ import { aiDetail } from "../../../shared/models/messageBase";
 export class ChatAiContacts implements OnInit {
     @Input() selectedAI: string = '';
     @Output() setSelectedAi = new EventEmitter<string>();
+    @Output() savePdf = new EventEmitter<string>();
 
     aiList : aiDetail[] = [];
 
@@ -29,6 +30,10 @@ export class ChatAiContacts implements OnInit {
 
     setSelectedContact(aiName: string) {
         this.setSelectedAi.emit(aiName);
+    }
+
+    saveChatPdf() {
+        this.savePdf.emit();
     }
 
 }
