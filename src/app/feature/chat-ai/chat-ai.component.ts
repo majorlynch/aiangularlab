@@ -3,7 +3,6 @@ import {
   ViewEncapsulation,
   //ChangeDetectionStrategy,
   //ChangeDetectorRef,
-  NgZone
 } from '@angular/core';
 import { ChatAiContacts } from './chat-contacts/chat-contacts';
 import { HttpClient } from '@angular/common/http';

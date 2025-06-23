@@ -8,14 +8,14 @@ export class LogService {
   constructor(private ngZone: NgZone) {}
 
   log(message: string) {
-    console.log(message);
+    this.ngZone.runOutsideAngular(() => console.log(message));
   }
 
   warn(message: string) {
-    console.log(message);
+    this.ngZone.runOutsideAngular(() => console.warn(message));
   }
   error(message: string) {
-    console.error(message);
+    this.ngZone.runOutsideAngular(() => console.error(message));
   }
 
 }
