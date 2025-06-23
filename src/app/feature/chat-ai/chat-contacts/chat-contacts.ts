@@ -2,6 +2,8 @@ import { Component, Input, Output, OnInit, EventEmitter } from "@angular/core";
 import { ChatService } from "../../../services/chat-services";
 import { CommonModule } from "@angular/common";
 import { aiDetail } from "../../../shared/models/messageBase";
+import { FeatureFlagService } from "src/app/core/services/feature-flag-service.service";
+import { finalize } from "rxjs";
 
 @Component( {
     selector: 'app-chat-contacts',
@@ -16,16 +18,20 @@ export class ChatAiContacts implements OnInit {
     @Output() setSelectedAi = new EventEmitter<string>();
     @Output() savePdf = new EventEmitter<string>();
 
+    featureFlags: {} ={};
     aiList : aiDetail[] = [];
 
-    constructor (private ChatService: ChatService) {}
+    constructor(private featureFlagService: FeatureFlagService,
+                private ChatService: ChatService) {}
 
     ngOnInit () {
-        this.getContactData();
+      this.featureFlags = this.featureFlagService.getAllFlags();
+      this.getContactData();
     }
 
     getContactData() {
-        this.ChatService.getContactData().subscribe(res => this.aiList = res);
+        this.ChatService.getContactData().pipe(finalize(() => {console.log(this.aiList)}))
+        .subscribe(res => this.aiList = res);
     }
 
     setSelectedContact(aiName: string) {

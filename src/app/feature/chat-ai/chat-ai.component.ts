@@ -20,6 +20,8 @@ import { aiDetail } from '../../shared/models/messageBase';
 import { AI_NAMES } from '@enums/ainame.enum';
 import { CHATSYMBOLGROUPS } from '@constants/chatSymbols';
 import { formatResponse } from '@utils/format-response.util';
+import { LogService } from 'src/app/core/services/log-service.service';
+import { FeatureFlagService } from 'src/app/core/services/feature-flag-service.service';
 
 @Component({
   selector: 'app-chat-ai',
@@ -43,17 +45,20 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
   errorMessage: string = '';
   allowCarraigeReturn: boolean = false;
   chatSymbolGroups:string[][];
+  featureFlags = {} = {};
 
   constructor(
     private chatService: ChatService,
+    private logService: LogService,
+    private featureFlagService: FeatureFlagService
     //private cdRef: ChangeDetectorRef,
-    private ngZone: NgZone
   ) {
-    //this.cdRef.detach();
     this.chatSymbolGroups = CHATSYMBOLGROUPS;
+    //this.cdRef.detach();
   }
 
   ngOnInit() {
+    this.featureFlags = this.featureFlagService.getAllFlags();
     this.chatService.getContactData().subscribe((res) => (this.aiList = res));
     this.selectedAI = this.aiList.find((r) => r.aiName == AI_NAMES.GEMINI);
     this.chatContent = [
@@ -79,7 +84,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
   }
 
   ngDoCheck(): void {
-    console.log('Perform check');
+    this.logService.log('Perform check');
   }
 
   sendMessage() {
@@ -145,16 +150,11 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
           })
         )
         .subscribe({
-          next: (res) => {
-            (chatResponse = formatResponse(res)),
-            this.ngZone.runOutsideAngular(() => console.log(res))
-          },
+          next: (res) => {(chatResponse = formatResponse(res))},
           error: (err) => {
-          console.log('there is an error', err);
+          this.logService.error(err);
         }
-      }
-          );
-
+      });
     }
     else if (this.selectedAI?.aiName == AI_NAMES.DEEPSEEK) {
       const chatHistory: ChatHistory[] = this.displayMessages.map(
@@ -272,7 +272,6 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
   {
     this.allowCarraigeReturn = !this.allowCarraigeReturn;
     //this.cdRef.detectChanges();
-    console.log(this.allowCarraigeReturn);
   }
 
   closeErrorMessage()

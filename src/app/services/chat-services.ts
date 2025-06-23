@@ -1,3 +1,4 @@
+import { FeatureFlagService } from 'src/app/core/services/feature-flag-service.service';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { of, from, Observable, throwError } from 'rxjs';
@@ -37,7 +38,8 @@ export class ChatService {
   mistralClient = new Mistral({apiKey: environment.apiKeyMistral});
 
 
-  constructor(private mockChatService: MockChatService){
+  constructor(private featureFlagService: FeatureFlagService,
+              private mockChatService: MockChatService){
   }
   async getGeminiChatPromise(
     chatPrompt: string,
@@ -153,18 +155,21 @@ export class ChatService {
         aiName: AI_NAMES.GEMINI,
         aiImage: 'assets/images/gemini.png',
         aiOnlineStatus: 'online',
+        featured: this.featureFlagService.getFlag(AI_NAMES.GEMINI)
       },
       {
         aiName: AI_NAMES.DEEPSEEK,
         aiImage: 'assets/images/deepseek.png',
         aiOnlineStatus: 'online',
+        featured: this.featureFlagService.getFlag(AI_NAMES.DEEPSEEK)
       },
       {
         aiName: AI_NAMES.MISTRAL,
         aiImage: 'assets/images/mistral.png',
         aiOnlineStatus: 'online',
+        featured: this.featureFlagService.getFlag(AI_NAMES.MISTRAL)
       },
-    ]);
+    ].filter(r => {return r.featured == true}));
   }
 
   getMessages(): Observable<MessageDetail[]> {

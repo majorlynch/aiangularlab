@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { PromptService } from '../../services/prompt-ai.service';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize, tap } from 'rxjs';
 import { formatResponse } from '@utils/format-response.util';
+import { FeatureFlagService } from 'src/app/core/services/feature-flag-service.service';
 
 @Component({
   selector: 'app-google-ai',
@@ -13,7 +14,7 @@ import { formatResponse } from '@utils/format-response.util';
   templateUrl: './prompt-ai.component.html',
   styleUrl: './prompt-ai.component.css',
 })
-export class PromptAiComponent {
+export class PromptAiComponent implements OnInit{
   prompt: string = '';
   aiGeminiResponse: string = '';
   aiDeepSeekResponse: string = '';
@@ -26,11 +27,17 @@ export class PromptAiComponent {
   mistralPosition: number = -1;
   position: number = 0;
   medalArray:string[] = ['🥇','🥈','🥉'];
+  featureFlags: any;
 
+  constructor(private featureFlagService: FeatureFlagService,
+              private PromptService: PromptService) {}
 
-  constructor(private PromptService: PromptService) {}
+  ngOnInit(): void {
+    this.featureFlags = this.featureFlagService.getAllFlags();
+  }
 
   getResponse() {
+
     this.aiGeminiResponse = '';
     this.aiDeepSeekResponse = '';
     this.aiMistralResponse = '';

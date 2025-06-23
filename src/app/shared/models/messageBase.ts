@@ -11,7 +11,7 @@ export interface MessageDetail {
 
 export interface ChatContent {
     aiName: string,
-    messageDetail: MessageDetail[]
+    messageDetail: MessageDetail[],
 }
 
 export interface TextPrompt {
@@ -22,6 +22,7 @@ export interface aiDetail {
     aiName: string,
     aiImage: string,
     aiOnlineStatus: string,
+    featured?: boolean
 }
 
 export interface ChatHistory {
