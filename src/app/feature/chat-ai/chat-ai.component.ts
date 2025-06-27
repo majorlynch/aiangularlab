@@ -1,19 +1,14 @@
-import { AfterViewChecked, Component, DoCheck } from '@angular/core';
-import {
-  ViewEncapsulation,
-  //ChangeDetectionStrategy,
-  //ChangeDetectorRef,
-} from '@angular/core';
+import { AfterViewChecked, Component, DoCheck, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ChatAiContacts } from './chat-contacts/chat-contacts';
 import { HttpClient } from '@angular/common/http';
 import { ChatService } from '../../services/chat-services';
+import { ChatInputComponent } from './chat-input/chat-input.component';
 import {
   ChatContent,
   ChatHistory,
   MessageDetail,
 } from '../../shared/models/messageBase';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { catchError, finalize, throwError } from 'rxjs';
 import { aiDetail } from '../../shared/models/messageBase';
 import { AI_NAMES } from '@enums/ainame.enum';
@@ -25,7 +20,7 @@ import { FeatureFlagService } from 'src/app/core/services/feature-flag-service.s
 @Component({
   selector: 'app-chat-ai',
   standalone: true,
-  imports: [CommonModule, FormsModule, ChatAiContacts],
+  imports: [ChatAiContacts, ChatInputComponent, CommonModule],
   templateUrl: './chat-ai.component.html',
   styleUrl: './chat-ai.component.css',
   encapsulation: ViewEncapsulation.Emulated,
@@ -43,7 +38,6 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
   useMock:boolean = false;
   errorMessage: string = '';
   allowCarraigeReturn: boolean = false;
-  chatSymbolGroups:string[][];
   featureFlags = {} = {};
 
   constructor(
@@ -52,7 +46,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
     private featureFlagService: FeatureFlagService
     //private cdRef: ChangeDetectorRef,
   ) {
-    this.chatSymbolGroups = CHATSYMBOLGROUPS;
+
     //this.cdRef.detach();
   }
 
@@ -86,7 +80,8 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
     this.logService.log('Perform check');
   }
 
-  sendMessage() {
+  sendMessage(chatPromptParam: string) {
+    this.chatPrompt = chatPromptParam;
     let chatResponse: string = '';
     this.isChatLoading = true;
     const newUserMessage: MessageDetail[] = [
@@ -262,26 +257,9 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
     //this.cdRef.detectChanges();
   }
 
-  messageCarraigeReturn() {
-    if (!this.allowCarraigeReturn)
-      this.sendMessage();
-  }
-
-  toggleCarriageReturn()
-  {
-    this.allowCarraigeReturn = !this.allowCarraigeReturn;
-    //this.cdRef.detectChanges();
-  }
-
   closeErrorMessage()
   {
     this.errorMessage = '';
-  }
-
-  addSymbol(text: string)
-  {
-    this.chatPrompt += text;
-    //this.cdRef.detectChanges();
   }
 }
 

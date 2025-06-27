@@ -5,15 +5,18 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto text-light">
+      <ul class="navbar-nav  me-auto text-light">
         <li class="nav-item">
           <a class="nav-link text-light" routerLink="/chat">AI Chat</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-light" routerLink="/ai">AI Prompt</a>
+          <a class="nav-link text-light px-3" routerLink="/ai">AI Prompt</a>
         </li>
         <li *ngIf="aiGeminiEnable" class="nav-item">
-          <a class="nav-link text-light" routerLink="/image">Gemini Image Reader</a>
+          <a class="nav-link text-light px-3" routerLink="/imageread">Gemini Image Reader</a>
+        </li>
+        <li *ngIf="aiGeminiEnable" class="nav-item">
+          <a class="nav-link text-light px-3" routerLink="/imagegen">ChatGPT Image Generator</a>
         </li>
         </ul>
       </div>

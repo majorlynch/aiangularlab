@@ -103,7 +103,6 @@ export class ChatService {
   }
 
 
-
   async getDeepseekChatPromise(chatPrompt: string, chatHistory: ChatHistory[]
   ): Promise<string> {
     chatHistory.push({ role: 'user', content: chatPrompt });
@@ -162,6 +161,12 @@ export class ChatService {
         aiImage: 'assets/images/deepseek.png',
         aiOnlineStatus: 'online',
         featured: this.featureFlagService.getFlag(AI_NAMES.DEEPSEEK)
+      },
+      {
+        aiName: AI_NAMES.CHATGPT,
+        aiImage: 'assets/images/chatgpt.png',
+        aiOnlineStatus: 'online',
+        featured: this.featureFlagService.getFlag(AI_NAMES.CHATGPT)
       },
       {
         aiName: AI_NAMES.MISTRAL,

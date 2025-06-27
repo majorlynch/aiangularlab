@@ -1,0 +1,20 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-6 mx-auto mt-3 p-2 border" style="white-space: pre-wrap">
+      <h2 class="pb-2">Step 1 - Suggest an image</h2>
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" [(ngModel)]="imageGenInstruction" placeholder="Ask a question" aria-label="Question about image" aria-describedby="sendMessageButton"
+            (keydown.enter)="generateImage()">
+        <button class="btn btn-outline-secondary" type="button" id="sendMessageButton" (click)="generateImage()" [disabled]="isLoading"><i class="bi bi-send"></i></button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6 mx-auto mt-3 p-2 border">
+        <h2 class="pb-2">Image Preview</h2>
+      <div class="preview-container">
+        <img id="preview" *ngIf="imageSrc" [src]="imageSrc" class="img-fluid img-thumbnail rounded mx-auto d-block" alt="Image Preview" />
+      </div>
+    </div>
+  </div>
+</div>

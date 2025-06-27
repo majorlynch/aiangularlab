@@ -1,0 +1,27 @@
+          <div class="input-group mb-3">
+            <textarea
+              type="text"
+              class="form-control"
+              [(ngModel)]="chatPrompt"
+              placeholder="Write a message"
+              aria-label="Recipient's username"
+              aria-describedby="sendMessageButton"
+            ></textarea>
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split fs-5" data-bs-toggle="dropdown" aria-expanded="false" [innerText]="'😀'">
+              <span class="visually-hidden">Toggle Dropdown</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+              <li *ngFor="let group of chatSymbolGroups" class="d-flex flex-wrap gap-2">
+                <button *ngFor="let chatSymbol of group" (click)="addSymbol(chatSymbol)" class="btn btn-light btn-sm rounded-circle fs-4">{{chatSymbol}}</button>
+              </li>
+            </ul>
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              id="sendMessageButton"
+              (click)="sendInput()"
+              [disabled]="isChatLoading"
+            >
+              <i class="bi bi-send"></i>
+            </button>
+          </div>

@@ -38,8 +38,8 @@ export class ChatAiContacts implements OnInit {
         this.setSelectedAi.emit(aiName);
     }
 
-    saveChatPdf() {
-        this.savePdf.emit();
-    }
+    //saveChatPdf() {
+    //    this.savePdf.emit();
+    //}
 
 }

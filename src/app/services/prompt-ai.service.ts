@@ -5,6 +5,7 @@ import { GenerateContentResponse, GoogleGenAI } from '@google/genai';
 import { OpenAI } from 'openai';
 import { Mistral } from '@mistralai/mistralai';
 import { MockChatService } from './mocks/mock-chat-service';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -12,24 +13,28 @@ import { MockChatService } from './mocks/mock-chat-service';
 export class PromptService {
 
   //Gemini
-  ai = new GoogleGenAI({
+  geminiAI = new GoogleGenAI({
     apiKey: environment.apiKeyGemini,
   });
 
   //Deepseek
-  openai = new OpenAI({
+  deepseekAI = new OpenAI({
     baseURL: 'https://api.deepseek.com',
     dangerouslyAllowBrowser: true,
     apiKey: environment.apiKeyDeepSeek
   });
 
-  //Mistral
-  mistralClient = new Mistral({apiKey: environment.apiKeyMistral});
+  //ChatGPT
+  private chatpGPTApiUrl = 'https://api.openai.com/v1/chat/completions';
 
-  constructor(private mockChatService: MockChatService) {}
+  //Mistral
+  mistralAI = new Mistral({apiKey: environment.apiKeyMistral});
+
+  constructor(private http: HttpClient,
+              private mockChatService: MockChatService) {}
 
   async getGeminiResponsePromise(prompt: string): Promise<string | undefined> {
-    const response: GenerateContentResponse = await this.ai.models.generateContent({
+    const response: GenerateContentResponse = await this.geminiAI.models.generateContent({
         model: 'gemini-2.0-flash',
         contents: prompt,
       });
@@ -45,7 +50,7 @@ export class PromptService {
   }
 
   async getDeepSeekResponsePromise(prompt: string): Promise<string> {
-    const response = await this.openai.chat.completions.create({
+    const response = await this.deepseekAI.chat.completions.create({
       messages: [{ role: "system", content: prompt }],
       model: "deepseek-chat"
     });
@@ -61,8 +66,36 @@ export class PromptService {
   }
 
 
+  getChatGPTResponse(prompt: string): Observable<Object> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${environment.apiKeyChatGPT}`,
+    });
+
+    const body = {
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+      temperature: 0.7,
+    };
+
+    return this.http.post(this.chatpGPTApiUrl, body, { headers });
+  }
+/*
+  getChatGPTResponse(prompt: string, returnMockText?: boolean): Observable<string> {
+    if (!returnMockText)
+      return from(this.getChatGPTResponsePromise(prompt));
+    else
+      return this.mockChatService.getMockResponse();
+  }
+*/
+
   async getMistralResponsePromise(prompt: string): Promise<string> {
-    const chatResponse = await this.mistralClient.chat.complete({
+    const chatResponse = await this.mistralAI.chat.complete({
         model: "mistral-large-latest",
         messages: [{role: 'user', content: prompt}]
     });

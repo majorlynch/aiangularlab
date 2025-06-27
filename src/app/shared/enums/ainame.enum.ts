@@ -1,5 +1,6 @@
 export enum AI_NAMES {
   GEMINI = 'Gemini',
   DEEPSEEK = 'Deepseek',
-  MISTRAL = 'Mistral'
+  MISTRAL = 'Mistral',
+  CHATGPT = 'ChatGPT',
 }
