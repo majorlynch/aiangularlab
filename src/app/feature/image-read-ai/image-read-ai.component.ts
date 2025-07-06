@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Component } from '@angular/core';
 import { finalize } from 'rxjs';
-import { ChatService } from 'src/app/services/chat-services';
+import { ChatService } from '@services/chat-services';
 import { formatResponse } from '@utils/format-response.util';
 
 @Component({

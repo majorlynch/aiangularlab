@@ -2,7 +2,7 @@ import { GenerateContentResponse } from '@google/genai';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ImageGenService } from './../../services/image-gen.service';
+import { ImageGenService } from '@services/image-gen.service';
 
 @Component({
   selector: 'app-image-gen-ai',

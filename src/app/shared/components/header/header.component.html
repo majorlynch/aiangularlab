@@ -1,0 +1,32 @@
+<!--nav class="navbar d-flex flex-row" style="background-color: #6f42c1;">-->
+<nav class="navbar navbar-expand-lg navbar-light text-light justify-content-between" style="background-color: #6f42c1;">
+  <div class="container-fluid text-light">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav  me-auto text-light">
+        <li class="nav-item">
+          <a class="nav-link text-light" routerLink="/chat">AI Chat</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-light px-3" routerLink="/ai">AI Prompt</a>
+        </li>
+        <li *ngIf="aiGeminiEnable" class="nav-item">
+          <a class="nav-link text-light px-3" routerLink="/imageread">Image Reader</a>
+        </li>
+        <li *ngIf="aiChatGPTEnable" class="nav-item">
+          <a class="nav-link text-light px-3" routerLink="/imagegen">Image Generator</a>
+        </li>
+        </ul>
+      </div>
+
+    <div class="btn-group justify-content-b" role="group" aria-label="Basic radio toggle button group">
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked (click)="toggleDarkMode()">
+        <label class="btn btn-outline-light text-light" for="btnradio1"><i class="bi-sun" style="color: black;"></i></label>
+
+        <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" (click)="toggleDarkMode()">
+        <label class="btn btn-outline-dark text-light" for="btnradio2"><i class="bi-moon" style="color: white;"></i></label>
+      </div>
+  </div>
+</nav>

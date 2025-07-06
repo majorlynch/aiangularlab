@@ -1,19 +1,15 @@
-import { FeatureFlagService } from 'src/app/core/services/feature-flag-service.service';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { of, from, Observable, throwError } from 'rxjs';
+import { of, from, Observable } from 'rxjs';
 import { createPartFromBase64, createUserContent, GenerateContentResponse, GoogleGenAI } from '@google/genai';
 import {
   aiDetail,
   ChatHistory,
   MessageDetail,
   TextPrompt,
-} from '../shared/models/messageBase';
+} from '../shared/model/messageBase';
 import { OpenAI } from 'openai';
 import { MockChatService } from './mocks/mock-chat-service';
-import { AI_NAMES } from '@enums/ainame.enum';
-import { Mistral } from '@mistralai/mistralai';
-import { ContentChunk } from '@mistralai/mistralai/models/components';
 
 @Injectable({
   providedIn: 'root',
@@ -21,25 +17,18 @@ import { ContentChunk } from '@mistralai/mistralai/models/components';
 export class ChatService {
   docs: any;
   response: any;
-
   //Gemini
   ai = new GoogleGenAI({
     apiKey: environment.apiKeyGemini,
   });
 
-  //Deepseek
   openai = new OpenAI({
     baseURL: 'https://api.deepseek.com',
     dangerouslyAllowBrowser: true,
     apiKey: environment.apiKeyDeepSeek,
   });
 
-  //Mistral
-  mistralClient = new Mistral({apiKey: environment.apiKeyMistral});
-
-
-  constructor(private featureFlagService: FeatureFlagService,
-              private mockChatService: MockChatService){
+  constructor(private mockChatService: MockChatService){
   }
   async getGeminiChatPromise(
     chatPrompt: string,
@@ -72,6 +61,7 @@ export class ChatService {
     aiHistory: TextPrompt[],
     returnMockText?: boolean
   ): Observable<string> {
+    console.log(environment.apiKeyGemini);
     if (!returnMockText)
     {
       return from(
@@ -81,7 +71,7 @@ export class ChatService {
     else
      {
       return from(
-        this.mockChatService.getMockResponse()
+        this.mockChatService.getGeminiChat(chatPrompt, userHistory, aiHistory)
       );
      }
   }
@@ -102,6 +92,20 @@ export class ChatService {
      return from(this.getGeminiImageReadPromise(imageContent, imageQuestion));
   }
 
+  formatGeminiContent(input: string): string {
+    return input
+      .replace(/\#\#\#\#\#\#(.*?)\n/g, '<h6>$1</h6>')
+      .replace(/\#\#\#\#\#(.*?)\n/g, '<h5>$1</h5>')
+      .replace(/\#\#\#\#(.*?)\n/g, '<h4>$1</h4>')
+      .replace(/\#\#\#(.*?)\n/g, '<h3>$1</h3>')
+      .replace(/\#\#(.*?)\n/g, '<h2>$1</h2>')
+      .replace(/\#(.*?)\n/g, '<h1>$1</h1>')
+      .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+      .replace(/\*(.*?)\*/g, '<i>$1</i>')
+      .replace(/\*\*\*(.*?)\*\*\*/g, '<b><i>$1</i></b>')
+      .replace(/\*(.*?)\*/g, '<i>$1</i>')
+      .replace('```', '');
+  }
 
   async getDeepseekChatPromise(chatPrompt: string, chatHistory: ChatHistory[]
   ): Promise<string> {
@@ -116,65 +120,25 @@ export class ChatService {
 
   getDeepseekChat(chatPrompt: string, chatHistory: ChatHistory[], returnMockText?: boolean
   ): Observable<string> {
-    if (!returnMockText)
+    if (returnMockText)
+      return this.mockChatService.getDeepSeekChat(chatPrompt, chatHistory)
+    else
       return from(this.getDeepseekChatPromise(chatPrompt, chatHistory));
-    else
-     return this.mockChatService.getMockResponse()
-  }
-
-  async getMistralChatPromise(chatPrompt: string, chatHistory: ChatHistory[]
-  ): Promise<string>
-  {
-    let response: string = '';
-    const result = await this.mistralClient.chat.stream({
-        model: "mistral-large-latest",
-        messages: chatHistory as any,
-    });
-
-    for await (const chunk of result) {
-        let streamText = chunk.data.choices[0].delta.content;
-        if (typeof streamText === "string") {
-            response += streamText;
-        }
-    }
-    return response;
-  }
-
-  getMistralChat(chatPrompt: string, chatHistory: ChatHistory[], returnMockText?: boolean
-  ): Observable<string> {
-    if (!returnMockText)
-      return from(this.getMistralChatPromise(chatPrompt, chatHistory));
-    else
-     return this.mockChatService.getMockResponse()
   }
 
   getContactData(): Observable<aiDetail[]> {
     return of([
       {
-        aiName: AI_NAMES.GEMINI,
+        aiName: 'Gemini',
         aiImage: 'assets/images/gemini.png',
         aiOnlineStatus: 'online',
-        featured: this.featureFlagService.getFlag(AI_NAMES.GEMINI)
       },
       {
-        aiName: AI_NAMES.DEEPSEEK,
+        aiName: 'Deepseek',
         aiImage: 'assets/images/deepseek.png',
         aiOnlineStatus: 'online',
-        featured: this.featureFlagService.getFlag(AI_NAMES.DEEPSEEK)
       },
-      {
-        aiName: AI_NAMES.CHATGPT,
-        aiImage: 'assets/images/chatgpt.png',
-        aiOnlineStatus: 'online',
-        featured: this.featureFlagService.getFlag(AI_NAMES.CHATGPT)
-      },
-      {
-        aiName: AI_NAMES.MISTRAL,
-        aiImage: 'assets/images/mistral.png',
-        aiOnlineStatus: 'online',
-        featured: this.featureFlagService.getFlag(AI_NAMES.MISTRAL)
-      },
-    ].filter(r => {return r.featured == true}));
+    ]);
   }
 
   getMessages(): Observable<MessageDetail[]> {

@@ -2,20 +2,19 @@ import { AfterViewChecked, Component, DoCheck, ViewEncapsulation } from '@angula
 import { CommonModule } from '@angular/common';
 import { ChatAiContacts } from './chat-contacts/chat-contacts';
 import { HttpClient } from '@angular/common/http';
-import { ChatService } from '../../services/chat-services';
+import { ChatService } from '@services/chat-services';
 import { ChatInputComponent } from './chat-input/chat-input.component';
 import {
   ChatContent,
   ChatHistory,
   MessageDetail,
-} from '../../shared/models/messageBase';
+} from '../../shared/models/chat.models';
 import { catchError, finalize, throwError } from 'rxjs';
-import { aiDetail } from '../../shared/models/messageBase';
-import { AI_NAMES } from '@enums/ainame.enum';
-import { CHATSYMBOLGROUPS } from '@constants/chatSymbols';
+import { aiDetail } from '../../shared/models/chat.models';
+import { AI_NAMES } from 'src/app/shared/enums/ainame.enum';
 import { formatResponse } from '@utils/format-response.util';
 import { LogService } from 'src/app/core/services/log-service.service';
-import { FeatureFlagService } from 'src/app/core/services/feature-flag-service.service';
+import { FeatureFlagService } from 'src/app/core/services/feature-flag.service';
 
 @Component({
   selector: 'app-chat-ai',

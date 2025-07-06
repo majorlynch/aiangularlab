@@ -7,7 +7,9 @@
       "@models/*":["src/app/shared/models/*"],
       "@enums/*": ["src/app/shared/enums/*"],
       "@utils/*": ["src/app/shared/utils/*"],
-      "@constants/*": ["src/app/shared/constants/*"]
+      "@constants/*": ["src/app/shared/constants/*"],
+      "@environment/*": ["src/environments/*"],
+      "@services/*": ["src/app/core/services/*"]
     },
     "outDir": "./dist/out-tsc",
     "strict": true,

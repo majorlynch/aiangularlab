@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { from, Observable } from "rxjs";
 import { ChatService } from "../chat-services";
-import { ChatHistory, TextPrompt } from "src/app/shared/models/messageBase";
+import { ChatHistory, TextPrompt } from "@models/messageBase";
 
 
 @Injectable({
@@ -13,9 +13,14 @@ export class MockChatService {
     constructor() {
     }
 
-    getMockResponse()
+    getGeminiChat(chatPrompt: string,userHistory: TextPrompt[],aiHistory: TextPrompt[])
     {
-      const sampleText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
-      return from([sampleText]);
+              const sampleText = 'This is sampletext';
+              return from([sampleText]);
     }
+
+      getDeepSeekChat(chatPrompt: string, chatHistory: ChatHistory[]): Observable<string> {
+          const sampleText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
+          return from([sampleText]);
+      }
 }
