@@ -8,7 +8,7 @@ import { Mistral } from '@mistralai/mistralai';
 import { MockChatService } from './mocks/mock-chat-service';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { AI_KEYS } from '@enums/ainame.enum';
-import { Chat } from 'openai/resources/beta/chat/chat';
+import { ChatResponseType } from '@models/chat.models';
 
 @Injectable({
   providedIn: 'root',
@@ -18,11 +18,11 @@ export class PromptService {
   apiKeyDeepSeek: string = '';
   apiKeyMistral: string = '';
   apiKeyChatGPT: string = '';
+  chatGPTResponse!: ChatResponseType;
 
   geminiAI: GoogleGenAI | null = null;
   deepseekAI: OpenAI | null = null;
   mistralAI: Mistral | null = null;
-  chatpGPTApiUrl = environment.apiUrlChatpGPT;
 
   constructor(private http: HttpClient,
     private apiKeysService: ApiKeysService,
@@ -91,25 +91,6 @@ export class PromptService {
       return this.mockChatService.getMockResponse();
   }
 
-
-  getChatGPTResponsePromise(prompt: string): Observable<any> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
-    const body = {
-      prompt: prompt
-    };
-    return this.http.post(environment.apiUrlChatpGPT, body, { headers });
-  }
-
-  getChatGPTResponse(prompt: string, returnMockText?: boolean): Observable<any> {
-    if (!returnMockText)
-      return from(this.getChatGPTResponsePromise(prompt)).pipe(
-        map(response => response.choices?.[0].message?.content));
-    else
-      return this.mockChatService.getMockResponse();
-  }
-
   async getMistralResponsePromise(prompt: string): Promise<string> {
     if (!this.mistralAI) {
       console.log('Gemini AI not set');
@@ -129,4 +110,24 @@ export class PromptService {
       return this.mockChatService.getMockResponse();
 
   }
+
+  getChatGPTResponsePromise(prompt: string): Observable<ChatResponseType> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    const body = {
+      messages: [{ role: 'user', content: prompt }]
+    };
+    return this.http.post<ChatResponseType>(environment.apiUrlChatGPTChat, body, { headers });
+  }
+
+  getChatGPTResponse(prompt: string, returnMockText?: boolean): Observable<string> {
+    if (!returnMockText)
+      return this.getChatGPTResponsePromise(prompt).pipe(
+        map((res: ChatResponseType) => res.response)
+      );  
+    else
+      return this.mockChatService.getMockResponse();
+  }
+
 }

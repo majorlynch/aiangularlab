@@ -256,7 +256,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
       );
 
       this.chatService
-        .GET(this.chatPrompt, chatHistory)
+        .getChatGPTResponse(this.chatPrompt, chatHistory)
         .pipe(
           catchError((error) => {
             if (error.status === 0)

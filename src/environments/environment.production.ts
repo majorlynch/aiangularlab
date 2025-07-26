@@ -4,7 +4,9 @@ export const environment = {
     production: true,
     baseUrl: baseUrl,
     apiKeyUrl: baseUrl + 's1/apikey/',
-    apiUrlChatpGPT: baseUrl + 's1/chat/',
+    apiUrlChatGPTChat: baseUrl + 's1/chatgptchat',
+    apiUrlChatGPTPrompt: baseUrl + 's1/chatgptprompt',
+    apiUrlChatGPTGenImage: baseUrl + 's1/chatgptgenimage',
     featureFlags: {
       Gemini: true,
       Deepseek: true,

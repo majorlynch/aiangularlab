@@ -7,6 +7,7 @@ import { createPartFromBase64, createUserContent, GenerateContentResponse, Googl
 import {
   aiDetail,
   ChatHistory,
+  ChatResponseType,
   MessageDetail,
   TextPrompt,
 } from '@models/chat.models';
@@ -31,7 +32,7 @@ export class ChatService {
   ai: GoogleGenAI | null = null;
 
   //Deepseek
-  openai: OpenAI | null = null;
+  deepseekAI: OpenAI | null = null;
 
   //Mistral
   mistralClient: Mistral | null = null;
@@ -53,7 +54,7 @@ export class ChatService {
         });
 
         //DeepSeek
-        this.openai = new OpenAI({
+        this.deepseekAI = new OpenAI({
           baseURL: 'https://api.deepseek.com',
           dangerouslyAllowBrowser: true,
           apiKey: this.apiKeyDeepSeek,
@@ -137,12 +138,12 @@ export class ChatService {
 
   async getDeepseekChatPromise(chatPrompt: string, chatHistory: ChatHistory[]
   ): Promise<string> {
-    if (!this.openai) {
+    if (!this.deepseekAI) {
       console.log('Deepseek ai not set');
       return '';
     }
-    chatHistory.push({ role: 'user', content: chatPrompt });
-    const completion = await this.openai.chat.completions.create({
+    //chatHistory.push({ role: 'user', content: chatPrompt });
+    const completion = await this.deepseekAI.chat.completions.create({
       model: 'deepseek-chat',
       messages: chatHistory as any,
     });
@@ -188,20 +189,20 @@ export class ChatService {
   }
 
 
-  getChatGPTResponsePromise(prompt: string): Observable<any> {
+  getChatGPTResponsePromise(prompt: string, chatHistory: ChatHistory[]): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
     const body = {
-      prompt: prompt
+      messages: chatHistory
     };
-    return this.http.post(environment.apiUrlChatpGPT, body, { headers });
+    return this.http.post(environment.apiUrlChatGPTChat, body, { headers });
   }
 
-  getChatGPTResponse(prompt: string, returnMockText?: boolean): Observable<any> {
+  getChatGPTResponse(prompt: string, chatHistory: ChatHistory[], returnMockText?: boolean): Observable<any> {
     if (!returnMockText)
-      return from(this.getChatGPTResponsePromise(prompt)).pipe(
-        map(response => response.choices?.[0].message?.content));
+      return from(this.getChatGPTResponsePromise(prompt, chatHistory)).pipe(
+              map((res: ChatResponseType) => res.response));
     else
       return this.mockChatService.getMockResponse();
   }

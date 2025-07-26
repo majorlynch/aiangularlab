@@ -29,3 +29,7 @@ export interface ChatHistory {
     role: string,
     content: string
 }
+
+export interface ChatResponseType {
+    response: string
+}
