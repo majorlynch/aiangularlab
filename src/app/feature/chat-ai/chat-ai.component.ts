@@ -66,6 +66,10 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
         aiName: AI_NAMES.MISTRAL,
         messageDetail: [],
       },
+      {
+        aiName: AI_NAMES.CHATGPT,
+        messageDetail: [],
+      },
     ];
     //this.cdRef.detectChanges();
   }
@@ -206,6 +210,53 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
 
       this.chatService
         .getMistralChat(this.chatPrompt, chatHistory)
+        .pipe(
+          catchError((error) => {
+            if (error.status === 0)
+              this.errorMessage = 'Network or CORS error occurred.';
+            else
+              this.errorMessage = `Error ${error.status}: ${error.message}`;
+            this.isChatLoading = false;
+            return throwError(() => error);
+          }),
+          finalize(() => {
+            const newResponseMessage: MessageDetail[] = [
+              {
+                userId: 2,
+                userName: this.selectedAI!.aiName,
+                userImage: this.selectedAI!.aiImage,
+                userStatus: 'online',
+                userType: 'assistant',
+                messageDetail: `${chatResponse}`,
+                messageTime: new Date(),
+                messageTimeText: new Date().toLocaleString('en-GB'),
+              },
+            ];
+            this.displayMessages = [
+              ...this.displayMessages,
+              ...newResponseMessage,
+            ];
+            this.chatContent.filter(
+              (r) => r.aiName == this.selectedAI!.aiName
+            )[0].messageDetail = this.displayMessages;
+            this.isChatLoading = false;
+            //this.cdRef.detectChanges();
+          })
+        )
+        .subscribe(
+          (res) => (chatResponse = formatResponse(res))
+        );
+    }
+    else if (this.selectedAI?.aiName == AI_NAMES.CHATGPT) {
+      const chatHistory: ChatHistory[] = this.displayMessages.map(
+        ({ userType, messageDetail }) => ({
+          role: userType,
+          content: messageDetail,
+        })
+      );
+
+      this.chatService
+        .GET(this.chatPrompt, chatHistory)
         .pipe(
           catchError((error) => {
             if (error.status === 0)

@@ -2,7 +2,7 @@ import { ApiKeysService } from './api-keys.service';
 import { FeatureFlagService } from 'src/app/core/services/feature-flag.service';
 import { Injectable, OnInit } from '@angular/core';
 import { environment } from '@environment/environment';
-import { of, from, Observable } from 'rxjs';
+import { of, from, Observable, map } from 'rxjs';
 import { createPartFromBase64, createUserContent, GenerateContentResponse, GoogleGenAI } from '@google/genai';
 import {
   aiDetail,
@@ -14,6 +14,7 @@ import { OpenAI } from 'openai';
 import { MockChatService } from './mocks/mock-chat-service';
 import { AI_NAMES, AI_KEYS } from '@enums/ainame.enum';
 import { Mistral } from '@mistralai/mistralai';
+import { HttpHeaders, HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -33,9 +34,10 @@ export class ChatService {
   openai: OpenAI | null = null;
 
   //Mistral
-  mistralClient:  Mistral | null = null;
+  mistralClient: Mistral | null = null;
 
-  constructor(private featureFlagService: FeatureFlagService,
+  constructor(private http: HttpClient,
+    private featureFlagService: FeatureFlagService,
     private apiKeysService: ApiKeysService,
     private mockChatService: MockChatService) {
     this.apiKeysService.getApiKeys().subscribe(keys => {
@@ -116,16 +118,16 @@ export class ChatService {
       console.log('Gemini AI not set');
       return '';
     }
-      const response: GenerateContentResponse = await this.ai.models.generateContent({
-        model: "gemini-2.0-flash",
-        contents: [
-          createUserContent([
-            imageQuestion,
-            createPartFromBase64(imageContent, 'image/png'),
-          ]),
-        ]
-      });
-      return response.candidates?.[0]?.content?.parts?.[0]?.text;
+    const response: GenerateContentResponse = await this.ai.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: [
+        createUserContent([
+          imageQuestion,
+          createPartFromBase64(imageContent, 'image/png'),
+        ]),
+      ]
+    });
+    return response.candidates?.[0]?.content?.parts?.[0]?.text;
   }
 
   getGeminiImageRead(imageContent: string, imageQuestion: string): Observable<string | undefined> {
@@ -184,6 +186,26 @@ export class ChatService {
     else
       return this.mockChatService.getMockResponse()
   }
+
+
+  getChatGPTResponsePromise(prompt: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    const body = {
+      prompt: prompt
+    };
+    return this.http.post(environment.apiUrlChatpGPT, body, { headers });
+  }
+
+  getChatGPTResponse(prompt: string, returnMockText?: boolean): Observable<any> {
+    if (!returnMockText)
+      return from(this.getChatGPTResponsePromise(prompt)).pipe(
+        map(response => response.choices?.[0].message?.content));
+    else
+      return this.mockChatService.getMockResponse();
+  }
+
 
   getContactData(): Observable<aiDetail[]> {
     return of([

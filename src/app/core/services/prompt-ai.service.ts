@@ -1,13 +1,14 @@
 import { ApiKeysService } from './api-keys.service';
 import { environment } from '@environment/environment';
 import { Injectable, OnInit } from '@angular/core';
-import { from, Observable } from 'rxjs';
+import { from, map, Observable } from 'rxjs';
 import { GenerateContentResponse, GoogleGenAI } from '@google/genai';
 import { OpenAI } from 'openai';
 import { Mistral } from '@mistralai/mistralai';
 import { MockChatService } from './mocks/mock-chat-service';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { AI_KEYS } from '@enums/ainame.enum';
+import { Chat } from 'openai/resources/beta/chat/chat';
 
 @Injectable({
   providedIn: 'root',
@@ -18,23 +19,14 @@ export class PromptService {
   apiKeyMistral: string = '';
   apiKeyChatGPT: string = '';
 
-  //Gemini
   geminiAI: GoogleGenAI | null = null;
-
-  //Deepseek
   deepseekAI: OpenAI | null = null;
-
-  //Mistral
-  mistralAI:  Mistral | null = null;
-
-  //ChatGPT
-  //private chatpGPTApiUrl = 'https://api.openai.com/v1/chat/completions';
-
-
+  mistralAI: Mistral | null = null;
+  chatpGPTApiUrl = environment.apiUrlChatpGPT;
 
   constructor(private http: HttpClient,
-              private apiKeysService:ApiKeysService,
-              private mockChatService: MockChatService) {
+    private apiKeysService: ApiKeysService,
+    private mockChatService: MockChatService) {
     this.apiKeysService.getApiKeys().subscribe((keys) => {
       if (keys) {
         this.apiKeyGemini = keys[AI_KEYS.GEMINI];
@@ -43,19 +35,19 @@ export class PromptService {
         this.apiKeyChatGPT = keys[AI_KEYS.CHATGPT];
       }
       //Gemini
-        this.geminiAI = new GoogleGenAI({
-          apiKey: this.apiKeyGemini,
-        });
+      this.geminiAI = new GoogleGenAI({
+        apiKey: this.apiKeyGemini,
+      });
 
-        //DeepSeek
-        this.deepseekAI = new OpenAI({
-          baseURL: 'https://api.deepseek.com',
-          dangerouslyAllowBrowser: true,
-          apiKey: this.apiKeyDeepSeek,
-        });
+      //DeepSeek
+      this.deepseekAI = new OpenAI({
+        baseURL: 'https://api.deepseek.com',
+        dangerouslyAllowBrowser: true,
+        apiKey: this.apiKeyDeepSeek,
+      });
 
-        //Mistral
-        this.mistralAI = new Mistral({ apiKey: this.apiKeyMistral });
+      //Mistral
+      this.mistralAI = new Mistral({ apiKey: this.apiKeyMistral });
     });
   }
 
@@ -65,9 +57,9 @@ export class PromptService {
       return '';
     }
     const response: GenerateContentResponse = await this.geminiAI.models.generateContent({
-        model: 'gemini-2.0-flash',
-        contents: prompt,
-      });
+      model: 'gemini-2.0-flash',
+      contents: prompt,
+    });
 
     return response.text;
   }
@@ -99,34 +91,24 @@ export class PromptService {
       return this.mockChatService.getMockResponse();
   }
 
-/*
-  getChatGPTResponse(prompt: string): Observable<Object> {
+
+  getChatGPTResponsePromise(prompt: string): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.apiKeyChatGPT}`,
     });
-
     const body = {
-      model: 'gpt-4o-mini',
-      messages: [
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
-      temperature: 0.7,
+      prompt: prompt
     };
-
-    return this.http.post(this.chatpGPTApiUrl, body, { headers });
+    return this.http.post(environment.apiUrlChatpGPT, body, { headers });
   }
 
-  getChatGPTResponse(prompt: string, returnMockText?: boolean): Observable<string> {
+  getChatGPTResponse(prompt: string, returnMockText?: boolean): Observable<any> {
     if (!returnMockText)
-      return from(this.getChatGPTResponsePromise(prompt));
+      return from(this.getChatGPTResponsePromise(prompt)).pipe(
+        map(response => response.choices?.[0].message?.content));
     else
       return this.mockChatService.getMockResponse();
   }
-*/
 
   async getMistralResponsePromise(prompt: string): Promise<string> {
     if (!this.mistralAI) {
@@ -134,8 +116,8 @@ export class PromptService {
       return '';
     }
     const chatResponse = await this.mistralAI.chat.complete({
-        model: "mistral-large-latest",
-        messages: [{role: 'user', content: prompt}]
+      model: "mistral-large-latest",
+      messages: [{ role: 'user', content: prompt }]
     });
     return (chatResponse.choices?.[0]?.message?.content as string);
   }

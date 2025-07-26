@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AI_NAMES } from 'src/app/shared/enums/ainame.enum';
+import { environment } from '@environment/environment';
 
 @Component({
   selector: 'app-header',
@@ -15,6 +16,7 @@ import { AI_NAMES } from 'src/app/shared/enums/ainame.enum';
 export class HeaderComponent implements OnInit{
   aiGeminiEnable: boolean = false;
   aiChatGPTEnable: boolean = false;
+  baseUrl: string = environment.baseUrl;
 
   constructor(private featureFlagService: FeatureFlagService) {}
 

@@ -55,19 +55,25 @@ export class PromptAiComponent implements OnInit{
 
     this.promptService.getGeminiResponse(this.prompt, this.promptSampleText)
     .pipe(finalize(() => {this.isLoadingGemini = false,
-                        this.geminiPosition = (this.position++) % 3}))
-    .subscribe(res => this.aiGeminiResponse = res || '');
+                        this.geminiPosition = (this.position++) % 4}))
+    .subscribe(res => this.aiGeminiResponse = formatResponse(res || '') );
 
     this.promptService.getDeepseekResponse(this.prompt, this.promptSampleText)
     .pipe(tap(res => console.log(res)),
           finalize(() => {this.isLoadingDeepseek = false,
-                          this.deepseekPosition = (this.position++) % 3}))
+                          this.deepseekPosition = (this.position++) % 4}))
     .subscribe(res => this.aiDeepSeekResponse = formatResponse(res));
 
     this.promptService.getMistralResponse(this.prompt, this.promptSampleText)
     .pipe(tap(res => console.log(res)),
           finalize(() => {this.isLoadingMistral = false,
-                          this.mistralPosition = (this.position++) % 3}))
+                          this.mistralPosition = (this.position++) % 4}))
     .subscribe(res => this.aiMistralResponse = formatResponse(res));
+
+    this.promptService.getChatGPTResponse(this.prompt, this.promptSampleText)
+    .pipe(tap(res => console.log(res)),
+          finalize(() => {this.isLoadingChatGPT = false,
+                          this.chatGPTPosition = (this.position++) % 4}))
+    .subscribe(res => this.aiChatGPTResponse = formatResponse(res));
   }
 }
