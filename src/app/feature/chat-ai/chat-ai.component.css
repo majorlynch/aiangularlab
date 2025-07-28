@@ -112,7 +112,7 @@ dy{
 
 @media (max-width: 576px) { /* Mobile screens */
     .chat-body {
-        height: 300px;
+        height: 450px;
     }
 }
 

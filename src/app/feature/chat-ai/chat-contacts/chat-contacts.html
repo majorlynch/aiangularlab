@@ -1,18 +1,47 @@
+<div class="col-inside-lg decor-default chat p-4" style="overflow: hidden; outline: none;" tabindex="5000">
+  <div class="chat-users">
+    <h6>Contacts</h6>
 
-          <div class="col-inside-lg decor-default chat p-4" style="overflow: hidden; outline: none;" tabindex="5000">
-            <div class="chat-users">
-              <h6>Contacts</h6>
-                <div *ngFor="let ai of aiList" class="user rounded border" aria-live="polite"
-                     [ngStyle]="ai.aiName == selectedAI ? {'background-color': '#ECEFF5'} : null"
-                     (click)="setSelectedContact(ai.aiName)">
-                    <div class="avatar">
-                    <img src="{{ai.aiImage}}" alt="User name">
-                    <div class="status {{ai.aiOnlineStatus}}"></div>
-                    </div>
-                    <div class="name">{{ai.aiName}}</div>
-                    <div class="mood">{{ai.aiOnlineStatus}}</div>
-                </div>
-                <!--
+<div class="accordion d-lg-none" id="accordionExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header" id="headingOne">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        Choose Your AI
+      </button>
+    </h2>
+    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+      <div class="accordion-body">
+            <div *ngFor="let ai of aiList" class=" user rounded border" aria-live="polite"
+      [ngStyle]="ai.aiName == selectedAI ? {'background-color': '#ECEFF5'} : null"
+      (click)="setSelectedContact(ai.aiName)">
+          <div class="avatar">
+            <img src="{{ai.aiImage}}" alt="User name">
+            <div class="status {{ai.aiOnlineStatus}}"></div>
+          </div>
+          <div class="name">{{ai.aiName}}</div>
+          <div class="mood">{{ai.aiOnlineStatus}}</div>
+        </div>
+
+                  </div>
+        </div>
+      </div>
+    </div>
+            <div *ngFor="let ai of aiList" class="d-none d-lg-block user rounded border" aria-live="polite"
+          [ngStyle]="ai.aiName == selectedAI ? {'background-color': '#ECEFF5'} : null"
+          (click)="setSelectedContact(ai.aiName)">
+          <div class="accordian" id="linkAccordian">
+            <div class="accordion-item">
+              <div class="avatar">
+                <img src="{{ai.aiImage}}" alt="User name">
+                <div class="status {{ai.aiOnlineStatus}}"></div>
+              </div>
+              <div class="name">{{ai.aiName}}</div>
+              <div class="mood">{{ai.aiOnlineStatus}}</div>
+            </div>
+          </div>
+        </div>
+  </div>
+  <!--
                 <div>
                   <button
                     type="button"
@@ -25,5 +54,4 @@
                   </button>
                 </div>
                 -->
-            </div>
-          </div>
+</div>
