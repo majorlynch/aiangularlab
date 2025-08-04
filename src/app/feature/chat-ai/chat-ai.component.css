@@ -107,7 +107,7 @@ dy{
   border: 1px solid black; /* Optional styling */
   background-color: #E9F1FA;
   border-width: 2px;
-  border-color: #ECEFF5;
+  border-color: #c0d9e4;
 }
 
 @media (max-width: 576px) { /* Mobile screens */

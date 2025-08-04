@@ -1,13 +1,13 @@
 <div class="container">
   <div class="content container-fluid bootstrap">
     <div class="row row-broken">
-      <div class="row d-sm-block d-md-none">
+      <div class="row d-sm-block col-md-9 d-md-block d-lg-none">
         <app-chat-contacts
           [selectedAI]="selectedAI!.aiName"
           (setSelectedAi)="setSelectedAi($event)"
         />
       </div>
-      <div class="col-sm-3 col-xs-12 d-none d-md-block">
+      <div class="col-sm-3 col-xs-12 d-none d-lg-block">
         <app-chat-contacts
           [selectedAI]="selectedAI!.aiName"
           (setSelectedAi)="setSelectedAi($event)"

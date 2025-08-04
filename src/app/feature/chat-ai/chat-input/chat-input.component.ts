@@ -28,7 +28,6 @@ export class ChatInputComponent {
 
   sendInput()
   {
-    console.log('sendInput '+ this.chatPrompt);
     this.sendMessage.emit(this.chatPrompt);
   }
 

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ImageGenAiComponent } from './image-gen-ai.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ImageGenAiComponent', () => {
   let component: ImageGenAiComponent;
@@ -8,7 +8,7 @@ describe('ImageGenAiComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ImageGenAiComponent]
+      imports: [HttpClientTestingModule, ImageGenAiComponent],
     })
     .compileComponents();
     

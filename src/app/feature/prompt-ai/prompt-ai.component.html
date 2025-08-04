@@ -24,7 +24,7 @@
   </div>
   <div class="text-center mt-5 justify-content-between">
     <div class="row">
-      <div *ngIf="featureFlags.Gemini" class="col-sm-3 mx-auto">
+      <div *ngIf="featureFlags.Gemini" class="col-sm-12 col-md-6 col-lg-3 mt-2 container-fluid">
         <div class="card">
           <h5 class="card-header"><img class="aiImage" src="/assets/images/gemini.png"/> Gemini AI Response <span class="fs-3">{{medalArray[geminiPosition]}}</span></h5>
           <div class="card-body text-start">
@@ -38,7 +38,7 @@
           </div>
         </div>
       </div>
-      <div *ngIf="featureFlags.Deepseek" class="col-sm-3 container-fluid">
+      <div *ngIf="featureFlags.Deepseek" class="col-sm-12 col-md-6 col-lg-3 mt-2 container-fluid">
         <div class="card">
           <h5 class="card-header"><img class="aiImage" src="/assets/images/deepseek.png"/>  DeepSeek AI Response <span class="fs-3">{{medalArray[deepseekPosition]}}</span></h5>
           <div class="card-body text-start">
@@ -52,7 +52,7 @@
           </div>
         </div>
       </div>
-      <div *ngIf="featureFlags.ChatGPT" class="col-sm-3 container-fluid">
+      <div *ngIf="featureFlags.ChatGPT" class="col-sm-12 col-md-6 col-lg-3 mt-2 container-fluid">
         <div class="card">
           <h5 class="card-header"><img class="aiImage" src="/assets/images/chatgpt.png"/> ChatGPT AI Response <span class="fs-3">{{medalArray[chatGPTPosition]}}</span></h5>
           <div class="card-body text-start">
@@ -66,7 +66,7 @@
           </div>
         </div>
       </div>
-      <div *ngIf="featureFlags.Mistral" class="col-sm-3 container-fluid">
+      <div *ngIf="featureFlags.Mistral" class="col-sm-12 col-md-6 col-lg-3 mt-2 container-fluid">
         <div class="card">
           <h5 class="card-header"><img class="aiImage" src="/assets/images/mistral.png"/> Mistral AI Response <span class="fs-3">{{medalArray[mistralPosition]}}</span></h5>
           <div class="card-body text-start">

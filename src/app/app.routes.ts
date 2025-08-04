@@ -5,10 +5,10 @@ import { ImageReadAiComponent } from './feature/image-read-ai/image-read-ai.comp
 import { ImageGenAiComponent } from './feature/image-gen-ai/image-gen-ai.component';
 
 export const routes: Routes = [
-  { path: 'aiangularlab', redirectTo: 'chat', pathMatch: 'full' },
-  { path: 'chat', title: 'AI Chat', component: ChatAiComponent },
+  { path: 'aiangularlab', redirectTo: 'ai', pathMatch: 'full' },
   { path: 'ai', title: 'AI Prompt', component: PromptAiComponent },
+  { path: 'chat', title: 'AI Chat', component: ChatAiComponent },
   { path: 'imageread', title: 'Gemini Image Reader', component: ImageReadAiComponent },
   { path: 'imagegen', title: 'Gemini Image Generator', component: ImageGenAiComponent},
-  { path: '', redirectTo: '/chat', pathMatch: 'full'},
+  { path: '', redirectTo: '/ai', pathMatch: 'full'},
 ];

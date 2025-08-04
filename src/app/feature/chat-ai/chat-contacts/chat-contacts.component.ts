@@ -4,21 +4,22 @@ import { CommonModule } from "@angular/common";
 import { aiDetail } from "../../../shared/models/chat.models";
 import { FeatureFlagService } from "src/app/core/services/feature-flag.service";
 import { finalize } from "rxjs";
+import { FeatureFlagModel } from "@models/apiKey.model";
 
 @Component( {
     selector: 'app-chat-contacts',
-    templateUrl: './chat-contacts.html',
-    styleUrl: './chat-contacts.css',
+    templateUrl: './chat-contacts.component.html',
+    styleUrl: './chat-contacts.component.css',
     standalone: true,
     imports: [CommonModule]
 })
 
-export class ChatAiContacts implements OnInit {
+export class ChatContactComponent implements OnInit {
     @Input() selectedAI: string = '';
     @Output() setSelectedAi = new EventEmitter<string>();
     @Output() savePdf = new EventEmitter<string>();
 
-    featureFlags: {} ={};
+    featureFlags: FeatureFlagModel  ={};
     aiList : aiDetail[] = [];
 
     constructor(private featureFlagService: FeatureFlagService,

@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component, DoCheck, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ChatAiContacts } from './chat-contacts/chat-contacts';
+import { ChatContactComponent } from './chat-contacts/chat-contacts.component';
 import { HttpClient } from '@angular/common/http';
 import { ChatService } from '@services/chat-services';
 import { ChatInputComponent } from './chat-input/chat-input.component';
@@ -15,11 +15,12 @@ import { AI_NAMES } from 'src/app/shared/enums/ainame.enum';
 import { formatResponse } from '@utils/format-response.util';
 import { LogService } from 'src/app/core/services/log-service.service';
 import { FeatureFlagService } from 'src/app/core/services/feature-flag.service';
+import { SoundService } from '@services/sound-service';
 
 @Component({
   selector: 'app-chat-ai',
   standalone: true,
-  imports: [ChatAiContacts, ChatInputComponent, CommonModule],
+  imports: [ChatContactComponent, ChatInputComponent, CommonModule],
   templateUrl: './chat-ai.component.html',
   styleUrl: './chat-ai.component.css',
   encapsulation: ViewEncapsulation.Emulated,
@@ -42,7 +43,8 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
   constructor(
     private chatService: ChatService,
     private logService: LogService,
-    private featureFlagService: FeatureFlagService
+    private featureFlagService: FeatureFlagService,
+    private soundService: SoundService
     //private cdRef: ChangeDetectorRef,
   ) {
 
@@ -143,7 +145,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
             )[0].messageDetail = this.displayMessages;
             this.isChatLoading = false;
             this.chatPrompt = '';
-            //this.cdRef.detectChanges();
+            this.soundService.playSound();
           })
         )
         .subscribe({
@@ -193,7 +195,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
               (r) => r.aiName == this.selectedAI!.aiName
             )[0].messageDetail = this.displayMessages;
             this.isChatLoading = false;
-            //this.cdRef.detectChanges();
+            this.soundService.playSound();
           })
         )
         .subscribe(
@@ -240,7 +242,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
               (r) => r.aiName == this.selectedAI!.aiName
             )[0].messageDetail = this.displayMessages;
             this.isChatLoading = false;
-            //this.cdRef.detectChanges();
+            this.soundService.playSound();
           })
         )
         .subscribe(

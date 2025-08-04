@@ -10,17 +10,16 @@
           <a class="nav-link text-light" href={{baseUrl}}><i class="bi bi-house fs-6"></i></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-light" routerLink="/chat">AI Chat</a>
+          <a class="nav-link text-light" routerLink="/ai">AI Prompt</a>
         </li>
         <li class="nav-item">
-          
-          <a class="nav-link text-light px-3" routerLink="/ai">AI Prompt</a>
+          <a class="nav-link text-light" routerLink="/chat">AI Chat</a>
         </li>
         <li *ngIf="aiGeminiEnable" class="nav-item">
-          <a class="nav-link text-light px-3" routerLink="/imageread">Image Reader</a>
+          <a class="nav-link text-light" routerLink="/imageread">Image Reader</a>
         </li>
         <li *ngIf="aiChatGPTEnable" class="nav-item">
-          <a class="nav-link text-light px-3" routerLink="/imagegen">Image Generator</a>
+          <a class="nav-link text-light" routerLink="/imagegen">Image Generator</a>
         </li>
         </ul>
       </div>

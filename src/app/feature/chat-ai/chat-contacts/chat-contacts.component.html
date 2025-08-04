@@ -21,12 +21,11 @@
           <div class="name">{{ai.aiName}}</div>
           <div class="mood">{{ai.aiOnlineStatus}}</div>
         </div>
-
-                  </div>
+        </div>
         </div>
       </div>
     </div>
-            <div *ngFor="let ai of aiList" class="d-none d-lg-block user rounded border" aria-live="polite"
+    <div *ngFor="let ai of aiList" class="d-none d-lg-block user rounded border" aria-live="polite"
           [ngStyle]="ai.aiName == selectedAI ? {'background-color': '#ECEFF5'} : null"
           (click)="setSelectedContact(ai.aiName)">
           <div class="accordian" id="linkAccordian">

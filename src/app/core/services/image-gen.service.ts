@@ -5,7 +5,7 @@ import { ApiKeysService } from './api-keys.service';
 import { AI_KEYS } from '@enums/ainame.enum';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChatResponseType } from '@models/chat.models';
-const { OpenAI } = require('openai');
+import { OpenAI } from 'openai';
 
 @Injectable({
   providedIn: 'root',
