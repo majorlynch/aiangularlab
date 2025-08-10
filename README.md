@@ -16,8 +16,13 @@ Welcome to **AI Angular Lab**, a sleek and intuitive playground built with Angul
 - **AI Image Generation**  
   Give it a creative prompt and watch the app generate an image using AI magic.
 
+- **No Data Tracking**  
+  The application looks for no information about you so you can be sure of a private experience.
+
 ## 🛠️ Tech Stack
 
 - **Angular** – frontend framework
-- **RxJS** – reactive programming
-- **
+- **Chat GPT** – AI
+- **Gemini** – AI
+- **DeepSeek** – AI
+- **Mistral** – AI

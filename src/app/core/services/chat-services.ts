@@ -66,11 +66,22 @@ export class ChatService {
     });
   }
 
-  async getGeminiChatPromise(
+  getGeminiChatPromise(
     chatPrompt: string,
     userHistory: TextPrompt[],
     aiHistory: TextPrompt[]
-  ): Promise<string> {
+  ): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    const body = {
+      chatPrompt,
+      userHistory,
+      aiHistory,
+    };
+    console.log(body);
+    return this.http.post(environment.apiUrlGeminiChat, body, { headers });
+    /*
     if (!this.ai) {
       console.log('Gemini AI not set');
       return '';
@@ -94,6 +105,7 @@ export class ChatService {
       message: chatPrompt,
     });
     return this.response.text;
+    */
   }
 
   getGeminiChat(
@@ -136,8 +148,9 @@ export class ChatService {
   }
 
 
-  async getDeepseekChatPromise(chatPrompt: string, chatHistory: ChatHistory[]
-  ): Promise<string> {
+  getDeepseekChatObservable(chatHistory: ChatHistory[]
+  ): Observable<any> {
+    /*
     if (!this.deepseekAI) {
       console.log('Deepseek ai not set');
       return '';
@@ -147,24 +160,35 @@ export class ChatService {
       model: 'deepseek-chat',
       messages: chatHistory as any,
     });
-
     return completion.choices[0].message.content!;
+*/
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    const body = {
+      messages: chatHistory
+    };
+    return this.http.post(environment.apiUrlDeepSeekChat, body, { headers });
   }
 
-  getDeepseekChat(chatPrompt: string, chatHistory: ChatHistory[], returnMockText?: boolean
-  ): Observable<string> {
+  getDeepseekChat(chatHistory: ChatHistory[], returnMockText?: boolean
+  ): Observable<any> {
     if (!returnMockText)
-      return from(this.getDeepseekChatPromise(chatPrompt, chatHistory));
+      return this.getDeepseekChatObservable(chatHistory).pipe(
+              map((res: ChatResponseType) => res.response));
     else
-      return this.mockChatService.getMockResponse()
+      return this.mockChatService.getMockResponse();
   }
 
-  async getMistralChatPromise(chatPrompt: string, chatHistory: ChatHistory[]
-  ): Promise<string> {
-    if (!this.mistralClient) {
-      console.log('Mistral ai not set');
-      return '';
-    }
+  getMistralChatPromise(chatHistory: ChatHistory[]
+  ): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    const body = {
+      messages: chatHistory
+    };
+    return this.http.post<string>(environment.apiUrlMistralChat, body, { headers });    /*
     let response: string = '';
     const result = await this.mistralClient.chat.stream({
       model: "mistral-large-latest",
@@ -178,18 +202,19 @@ export class ChatService {
       }
     }
     return response;
+    */
   }
 
-  getMistralChat(chatPrompt: string, chatHistory: ChatHistory[], returnMockText?: boolean
+  getMistralChat(chatHistory: ChatHistory[], returnMockText?: boolean
   ): Observable<string> {
     if (!returnMockText)
-      return from(this.getMistralChatPromise(chatPrompt, chatHistory));
+      return this.getMistralChatPromise(chatHistory);
     else
       return this.mockChatService.getMockResponse()
   }
 
 
-  getChatGPTResponsePromise(prompt: string, chatHistory: ChatHistory[]): Observable<any> {
+  getChatGPTResponsePromise(chatHistory: ChatHistory[]): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
@@ -199,9 +224,9 @@ export class ChatService {
     return this.http.post(environment.apiUrlChatGPTChat, body, { headers });
   }
 
-  getChatGPTResponse(prompt: string, chatHistory: ChatHistory[], returnMockText?: boolean): Observable<any> {
+  getChatGPTResponse(chatHistory: ChatHistory[], returnMockText?: boolean): Observable<any> {
     if (!returnMockText)
-      return from(this.getChatGPTResponsePromise(prompt, chatHistory)).pipe(
+      return from(this.getChatGPTResponsePromise(chatHistory)).pipe(
               map((res: ChatResponseType) => res.response));
     else
       return this.mockChatService.getMockResponse();
@@ -210,6 +235,12 @@ export class ChatService {
 
   getContactData(): Observable<aiDetail[]> {
     return of([
+      {
+        aiName: AI_NAMES.CHATGPT,
+        aiImage: 'assets/images/chatgpt.png',
+        aiOnlineStatus: 'online',
+        featured: this.featureFlagService.getFlag(AI_NAMES.CHATGPT)
+      },
       {
         aiName: AI_NAMES.GEMINI,
         aiImage: 'assets/images/gemini.png',
@@ -221,12 +252,6 @@ export class ChatService {
         aiImage: 'assets/images/deepseek.png',
         aiOnlineStatus: 'online',
         featured: this.featureFlagService.getFlag(AI_NAMES.DEEPSEEK)
-      },
-      {
-        aiName: AI_NAMES.CHATGPT,
-        aiImage: 'assets/images/chatgpt.png',
-        aiOnlineStatus: 'online',
-        featured: this.featureFlagService.getFlag(AI_NAMES.CHATGPT)
       },
       {
         aiName: AI_NAMES.MISTRAL,

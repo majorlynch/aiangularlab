@@ -7,9 +7,9 @@ export interface ApiKeyResponse {
 
 
 export interface FeatureFlagModel {
+        ChatGPT?: boolean,
         Gemini?: boolean,
         Deepseek?: boolean,
-        ChatGPT?: boolean,
         Mistral?: boolean,
         PromptSampleText?: boolean
 }

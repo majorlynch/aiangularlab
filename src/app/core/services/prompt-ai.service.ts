@@ -15,7 +15,6 @@ import { ChatResponseType } from '@models/chat.models';
 })
 export class PromptService {
   apiKeyGemini: string = '';
-  apiKeyDeepSeek: string = '';
   apiKeyMistral: string = '';
   apiKeyChatGPT: string = '';
   chatGPTResponse!: ChatResponseType;
@@ -30,20 +29,12 @@ export class PromptService {
     this.apiKeysService.getApiKeys().subscribe((keys) => {
       if (keys) {
         this.apiKeyGemini = keys[AI_KEYS.GEMINI];
-        this.apiKeyDeepSeek = keys[AI_KEYS.DEEPSEEK];
         this.apiKeyMistral = keys[AI_KEYS.MISTRAL];
         this.apiKeyChatGPT = keys[AI_KEYS.CHATGPT];
       }
       //Gemini
       this.geminiAI = new GoogleGenAI({
         apiKey: this.apiKeyGemini,
-      });
-
-      //DeepSeek
-      this.deepseekAI = new OpenAI({
-        baseURL: 'https://api.deepseek.com',
-        dangerouslyAllowBrowser: true,
-        apiKey: this.apiKeyDeepSeek,
       });
 
       //Mistral
@@ -71,27 +62,39 @@ export class PromptService {
       return this.mockChatService.getMockResponse();
   }
 
-  async getDeepSeekResponsePromise(prompt: string): Promise<string> {
-    if (!this.deepseekAI) {
-      console.log('Gemini AI not set');
-      return '';
-    }
-    const response = await this.deepseekAI.chat.completions.create({
-      messages: [{ role: "system", content: prompt }],
-      model: "deepseek-chat"
+  getDeepSeekResponsePromise(prompt: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
     });
-
-    return (response.choices[0].message.content!);
+    const body = {
+      messages:[{
+        role:'user',
+        content: prompt
+      }]
+    };
+    return this.http.post<string>(environment.apiUrlDeepSeekChat, body, { headers });
   }
 
   getDeepseekResponse(prompt: string, returnMockText?: boolean): Observable<string> {
     if (!returnMockText)
-      return from(this.getDeepSeekResponsePromise(prompt));
+      return this.getDeepSeekResponsePromise(prompt).pipe(
+        map((res: any) => res.response));
     else
       return this.mockChatService.getMockResponse();
   }
 
-  async getMistralResponsePromise(prompt: string): Promise<string> {
+  getMistralResponsePromise(prompt: string): Observable<string> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    const body = {
+      messages: [{
+        role:'user',
+        content: prompt
+      }]
+    };
+    return this.http.post<string>(environment.apiUrlMistralChat, body, { headers });
+    /*
     if (!this.mistralAI) {
       console.log('Gemini AI not set');
       return '';
@@ -101,17 +104,29 @@ export class PromptService {
       messages: [{ role: 'user', content: prompt }]
     });
     return (chatResponse.choices?.[0]?.message?.content as string);
+    */
   }
 
   getMistralResponse(prompt: string, returnMockText?: boolean): Observable<string> {
     if (!returnMockText)
-      return from(this.getMistralResponsePromise(prompt));
+      return this.getMistralResponsePromise(prompt);
     else
       return this.mockChatService.getMockResponse();
 
   }
 
-  getChatGPTResponsePromise(prompt: string): Observable<ChatResponseType> {
+  getChatGPTResponsePromise(prompt: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    const body = {
+      messages: [{
+        role:'user',
+        content: prompt
+      }]
+    };
+    return this.http.post<string>(environment.apiUrlChatGPTChat, body, { headers });
+    /*
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
@@ -119,13 +134,13 @@ export class PromptService {
       messages: [{ role: 'user', content: prompt }]
     };
     return this.http.post<ChatResponseType>(environment.apiUrlChatGPTChat, body, { headers });
+    */
   }
 
   getChatGPTResponse(prompt: string, returnMockText?: boolean): Observable<string> {
     if (!returnMockText)
       return this.getChatGPTResponsePromise(prompt).pipe(
-        map((res: ChatResponseType) => res.response)
-      );  
+        map((res: any) => res.response));
     else
       return this.mockChatService.getMockResponse();
   }

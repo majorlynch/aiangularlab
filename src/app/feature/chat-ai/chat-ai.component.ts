@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, DoCheck, ViewEncapsulation } from '@angular/core';
+import { AfterViewChecked, Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChatContactComponent } from './chat-contacts/chat-contacts.component';
 import { HttpClient } from '@angular/common/http';
@@ -27,7 +27,7 @@ import { SoundService } from '@services/sound-service';
   providers: [HttpClient],
   //changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ChatAiComponent implements AfterViewChecked, DoCheck {
+export class ChatAiComponent implements AfterViewChecked{
   chatPrompt: string = '';
   showInProgress = false;
   aiList: aiDetail[] = [];
@@ -54,8 +54,12 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
   ngOnInit() {
     this.featureFlags = this.featureFlagService.getAllFlags();
     this.chatService.getContactData().subscribe((res) => (this.aiList = res));
-    this.selectedAI = this.aiList.find((r) => r.aiName == AI_NAMES.GEMINI);
+    this.selectedAI = this.aiList.find((r) => r.aiName == AI_NAMES.CHATGPT);
     this.chatContent = [
+      {
+        aiName: AI_NAMES.CHATGPT,
+        messageDetail: [],
+      },
       {
         aiName: AI_NAMES.GEMINI,
         messageDetail: [],
@@ -68,10 +72,6 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
         aiName: AI_NAMES.MISTRAL,
         messageDetail: [],
       },
-      {
-        aiName: AI_NAMES.CHATGPT,
-        messageDetail: [],
-      },
     ];
     //this.cdRef.detectChanges();
   }
@@ -81,10 +81,6 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
     div!.scrollTop = div!.scrollHeight - 100;
   }
 
-  ngDoCheck(): void {
-    this.logService.log('Perform check');
-  }
-
   sendMessage(chatPromptParam: string) {
     this.chatPrompt = chatPromptParam;
     let chatResponse: string = '';
@@ -92,7 +88,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
     const newUserMessage: MessageDetail[] = [
       {
         userId: 1,
-        userName: 'Conor',
+        userName: 'User',
         userImage: 'assets/images/avatar1.png',
         userStatus: 'online',
         userType: 'user',
@@ -102,7 +98,6 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
       },
     ];
     this.displayMessages = [...this.displayMessages, ...newUserMessage];
-    //this.cdRef.detectChanges();
 
     if (this.selectedAI?.aiName == AI_NAMES.GEMINI) {
       const userHistory = this.displayMessages
@@ -164,7 +159,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
       );
 
       this.chatService
-        .getDeepseekChat(this.chatPrompt, chatHistory)
+        .getDeepseekChat(chatHistory)
         .pipe(
           catchError((error) => {
             if (error.status === 0)
@@ -211,7 +206,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
       );
 
       this.chatService
-        .getMistralChat(this.chatPrompt, chatHistory)
+        .getMistralChat(chatHistory)
         .pipe(
           catchError((error) => {
             if (error.status === 0)
@@ -258,7 +253,7 @@ export class ChatAiComponent implements AfterViewChecked, DoCheck {
       );
 
       this.chatService
-        .getChatGPTResponse(this.chatPrompt, chatHistory)
+        .getChatGPTResponse(chatHistory)
         .pipe(
           catchError((error) => {
             if (error.status === 0)

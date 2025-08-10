@@ -58,9 +58,10 @@ export class PromptAiComponent implements OnInit{
                         this.geminiPosition = (this.position++) % 4}))
     .subscribe(res => this.aiGeminiResponse = formatResponse(res || '') );
 
-    this.promptService.getDeepseekResponse(this.prompt, this.promptSampleText)
+    this.promptService.getDeepseekResponse(this.prompt, false)//, this.promptSampleText)
     .pipe(finalize(() => {this.isLoadingDeepseek = false,
-                          this.deepseekPosition = (this.position++) % 4}))
+                          this.deepseekPosition = (this.position++) % 4,
+                        console.log(this.aiDeepSeekResponse)}))
     .subscribe(res => this.aiDeepSeekResponse = formatResponse(res));
 
     this.promptService.getMistralResponse(this.prompt, this.promptSampleText)
@@ -68,7 +69,7 @@ export class PromptAiComponent implements OnInit{
                           this.mistralPosition = (this.position++) % 4}))
     .subscribe(res => this.aiMistralResponse = formatResponse(res));
 
-    this.promptService.getChatGPTResponse(this.prompt, false)// this.promptSampleText)
+    this.promptService.getChatGPTResponse(this.prompt, this.promptSampleText)
     .pipe(finalize(() => {this.isLoadingChatGPT = false,
                           this.chatGPTPosition = (this.position++) % 4}))
     .subscribe(res => this.aiChatGPTResponse = formatResponse(res));

@@ -46,7 +46,7 @@ export class ImageGenService implements OnInit {
         map((res: ChatResponseType) =>  res.response)));
     else
       return from([
-        'https://madebyconor.com/assets/img/conor.jpg',
+        'https://madebyconor.com/assets/img/user.jpg',
       ]);
   }
 }
