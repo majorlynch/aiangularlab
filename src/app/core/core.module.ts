@@ -1,4 +1,3 @@
-import { PromptService } from './services/prompt-ai.service';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FeatureFlagService } from './services/feature-flag.service';
@@ -11,6 +10,6 @@ import { ImageGenService } from './services/image-gen.service';
   imports: [
     CommonModule
   ],
-  providers: [ChatService, PromptService, ImageGenService, LogService, FeatureFlagService]
+  providers: [ChatService, ImageGenService, LogService, FeatureFlagService]
 })
 export class CoreModule { }

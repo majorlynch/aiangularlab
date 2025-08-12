@@ -144,7 +144,7 @@ export class ChatAiComponent implements AfterViewChecked{
           })
         )
         .subscribe({
-          next: (res) => {(chatResponse = formatResponse(res))},
+          next: (res) => {(chatResponse = formatResponse(res.response))},
           error: (err) => {
           this.logService.error(err);
         }
@@ -194,7 +194,7 @@ export class ChatAiComponent implements AfterViewChecked{
           })
         )
         .subscribe(
-          (res) => (chatResponse = formatResponse(res))
+          (res) => (chatResponse = formatResponse(res.response))
         );
     }
     else if (this.selectedAI?.aiName == AI_NAMES.MISTRAL) {
@@ -241,7 +241,7 @@ export class ChatAiComponent implements AfterViewChecked{
           })
         )
         .subscribe(
-          (res) => (chatResponse = formatResponse(res))
+          (res) => (chatResponse = formatResponse(res.response))
         );
     }
     else if (this.selectedAI?.aiName == AI_NAMES.CHATGPT) {
@@ -284,11 +284,11 @@ export class ChatAiComponent implements AfterViewChecked{
               (r) => r.aiName == this.selectedAI!.aiName
             )[0].messageDetail = this.displayMessages;
             this.isChatLoading = false;
-            //this.cdRef.detectChanges();
+            this.soundService.playSound();
           })
         )
         .subscribe(
-          (res) => (chatResponse = formatResponse(res))
+          (res) => (chatResponse = formatResponse(res.response))
         );
     }
 

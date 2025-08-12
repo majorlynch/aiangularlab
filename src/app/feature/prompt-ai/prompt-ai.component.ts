@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { PromptService } from '@services/prompt-ai.service';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize, tap } from 'rxjs';
@@ -7,6 +6,8 @@ import { formatResponse } from '@utils/format-response.util';
 import { FeatureFlagService } from 'src/app/core/services/feature-flag.service';
 import { HttpClient } from '@angular/common/http';
 import { FEATURE_FLAGS } from '@enums/featureFlags.enum';
+import { ChatService } from '@services/chat-services';
+import { ChatHistory } from '@models/chat.models';
 
 @Component({
   selector: 'app-google-ai',
@@ -36,7 +37,7 @@ export class PromptAiComponent implements OnInit{
   promptSampleText: boolean = false;
 
   constructor(private featureFlagService: FeatureFlagService,
-              private promptService: PromptService) {}
+              private chatService: ChatService) {}
 
   ngOnInit(): void {
     this.featureFlags = this.featureFlagService.getAllFlags();
@@ -52,26 +53,30 @@ export class PromptAiComponent implements OnInit{
     this.isLoadingChatGPT = true;
     this.isLoadingMistral = true;
     this.promptSampleText = this.featureFlagService.getFlag(FEATURE_FLAGS.PROMPTSAMPLETEXT);
+    const chatHistory:ChatHistory[] = [{
+                                  role: 'user',
+                                  content: this.prompt
+                                  }];
 
-    this.promptService.getGeminiResponse(this.prompt, this.promptSampleText)
+    this.chatService.getGeminiChat(this.prompt, [], [], this.promptSampleText)
     .pipe(finalize(() => {this.isLoadingGemini = false,
                         this.geminiPosition = (this.position++) % 4}))
-    .subscribe(res => this.aiGeminiResponse = formatResponse(res || '') );
+    .subscribe(res => this.aiGeminiResponse = formatResponse(res.response) );
 
-    this.promptService.getDeepseekResponse(this.prompt, false)//, this.promptSampleText)
+    this.chatService.getDeepseekChat(chatHistory, this.promptSampleText)
     .pipe(finalize(() => {this.isLoadingDeepseek = false,
                           this.deepseekPosition = (this.position++) % 4,
                         console.log(this.aiDeepSeekResponse)}))
-    .subscribe(res => this.aiDeepSeekResponse = formatResponse(res));
+    .subscribe(res => this.aiDeepSeekResponse = formatResponse(res.response));
 
-    this.promptService.getMistralResponse(this.prompt, this.promptSampleText)
+    this.chatService.getMistralChat(chatHistory, this.promptSampleText)
     .pipe(finalize(() => {this.isLoadingMistral = false,
                           this.mistralPosition = (this.position++) % 4}))
-    .subscribe(res => this.aiMistralResponse = formatResponse(res));
+    .subscribe(res => this.aiMistralResponse = formatResponse(res.response));
 
-    this.promptService.getChatGPTResponse(this.prompt, this.promptSampleText)
+    this.chatService.getChatGPTResponse(chatHistory, this.promptSampleText)
     .pipe(finalize(() => {this.isLoadingChatGPT = false,
                           this.chatGPTPosition = (this.position++) % 4}))
-    .subscribe(res => this.aiChatGPTResponse = formatResponse(res));
+    .subscribe(res => this.aiChatGPTResponse = formatResponse(res.response));
   }
 }

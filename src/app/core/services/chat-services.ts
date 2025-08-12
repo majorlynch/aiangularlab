@@ -113,7 +113,7 @@ export class ChatService {
     userHistory: TextPrompt[],
     aiHistory: TextPrompt[],
     returnMockText?: boolean
-  ): Observable<string> {
+  ): Observable<ChatResponseType> {
     if (!returnMockText) {
       return from(
         this.getGeminiChatPromise(chatPrompt, userHistory, aiHistory)
@@ -174,8 +174,7 @@ export class ChatService {
   getDeepseekChat(chatHistory: ChatHistory[], returnMockText?: boolean
   ): Observable<any> {
     if (!returnMockText)
-      return this.getDeepseekChatObservable(chatHistory).pipe(
-              map((res: ChatResponseType) => res.response));
+      return this.getDeepseekChatObservable(chatHistory);
     else
       return this.mockChatService.getMockResponse();
   }
@@ -206,7 +205,7 @@ export class ChatService {
   }
 
   getMistralChat(chatHistory: ChatHistory[], returnMockText?: boolean
-  ): Observable<string> {
+  ): Observable<ChatResponseType> {
     if (!returnMockText)
       return this.getMistralChatPromise(chatHistory);
     else
@@ -226,8 +225,7 @@ export class ChatService {
 
   getChatGPTResponse(chatHistory: ChatHistory[], returnMockText?: boolean): Observable<any> {
     if (!returnMockText)
-      return from(this.getChatGPTResponsePromise(chatHistory)).pipe(
-              map((res: ChatResponseType) => res.response));
+      return from(this.getChatGPTResponsePromise(chatHistory));
     else
       return this.mockChatService.getMockResponse();
   }
