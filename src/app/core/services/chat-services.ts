@@ -2,7 +2,7 @@ import { ApiKeysService } from './api-keys.service';
 import { FeatureFlagService } from 'src/app/core/services/feature-flag.service';
 import { Injectable, OnInit } from '@angular/core';
 import { environment } from '@environment/environment';
-import { of, from, Observable, map } from 'rxjs';
+import { of, from, Observable, map, catchError, throwError } from 'rxjs';
 import { createPartFromBase64, createUserContent, GenerateContentResponse, GoogleGenAI } from '@google/genai';
 import {
   aiDetail,
@@ -24,18 +24,18 @@ export class ChatService {
   docs: any;
   response: any;
   apiKeyGemini: string = '';
-  apiKeyDeepSeek: string = '';
-  apiKeyMistral: string = '';
-  apiKeyChatGPT: string = '';
+  //apiKeyDeepSeek: string = '';
+  //apiKeyMistral: string = '';
+  //apiKeyChatGPT: string = '';
 
   //Gemini
   ai: GoogleGenAI | null = null;
 
   //Deepseek
-  deepseekAI: OpenAI | null = null;
+  //deepseekAI: OpenAI | null = null;
 
   //Mistral
-  mistralClient: Mistral | null = null;
+  //mistralClient: Mistral | null = null;
 
   constructor(private http: HttpClient,
     private featureFlagService: FeatureFlagService,
@@ -44,24 +44,24 @@ export class ChatService {
     this.apiKeysService.getApiKeys().subscribe(keys => {
       if (keys) {
         this.apiKeyGemini = keys[AI_KEYS.GEMINI];
-        this.apiKeyDeepSeek = keys[AI_KEYS.DEEPSEEK];
-        this.apiKeyMistral = keys[AI_KEYS.MISTRAL];
-        this.apiKeyChatGPT = keys[AI_KEYS.CHATGPT];
+        //this.apiKeyDeepSeek = keys[AI_KEYS.DEEPSEEK];
+        //this.apiKeyMistral = keys[AI_KEYS.MISTRAL];
+        //this.apiKeyChatGPT = keys[AI_KEYS.CHATGPT];
 
         //Gemini
         this.ai = new GoogleGenAI({
           apiKey: this.apiKeyGemini,
         });
 
-        //DeepSeek
-        this.deepseekAI = new OpenAI({
-          baseURL: 'https://api.deepseek.com',
-          dangerouslyAllowBrowser: true,
-          apiKey: this.apiKeyDeepSeek,
-        });
+        // //DeepSeek
+        // this.deepseekAI = new OpenAI({
+        //   baseURL: 'https://api.deepseek.com',
+        //   dangerouslyAllowBrowser: true,
+        //   apiKey: this.apiKeyDeepSeek,
+        // });
 
         //Mistral
-        this.mistralClient = new Mistral({ apiKey: this.apiKeyMistral });
+        //this.mistralClient = new Mistral({ apiKey: this.apiKeyMistral });
       }
     });
   }
@@ -141,6 +141,24 @@ export class ChatService {
       ]
     });
     return response.candidates?.[0]?.content?.parts?.[0]?.text;
+    /*
+    return this.http.post<any>('/n1/geminiimageread/', {
+        imageContent,
+        imageQuestion
+      }).pipe(
+        map(res => {
+          if (res.success) {
+            return res.response;
+          } else {
+            throw new Error(res.message || 'Unknown error');
+          }
+        }),
+        catchError(err => {
+          console.error('Gemini API error:', err);
+          return throwError(() => err);
+        })
+      );
+    */
   }
 
   getGeminiImageRead(imageContent: string, imageQuestion: string): Observable<string | undefined> {

@@ -14,10 +14,10 @@ export class ImageGenService implements OnInit {
   apiKeyGemini: string = '';
 
   //ChatGPT
-  chatAPTAI = new OpenAI({
-    apiKey: '', //environment.apiKeyChatGPT,
-    dangerouslyAllowBrowser: true,
-  });
+  // chatAPTAI = new OpenAI({
+  //   apiKey: '', //environment.apiKeyChatGPT,
+  //   dangerouslyAllowBrowser: true,
+  // });
 
   constructor(private http: HttpClient,
               private apiKeysService: ApiKeysService) {}
@@ -35,7 +35,7 @@ export class ImageGenService implements OnInit {
       'Content-Type':'application/json',
     });
 
-    const body = {prompt: prompt, model: 'dall-e-2'};
+    const body = {prompt: prompt, model: model};
 
     return this.http.post<ChatResponseType>(environment.apiUrlChatGPTGenImage, body, { headers });
   }

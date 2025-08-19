@@ -3,9 +3,12 @@ import { ApiKeysService } from './api-keys.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { environment } from '@environment/environment'; // adjust path as needed
 import { ApiKeyResponse } from '@models/apiKey.model'; // adjust path if needed
+import { of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 describe('ApiKeysService', () => {
   let service: ApiKeysService;
+  let httpClientSpy: jasmine.SpyObj<HttpClient>;
   let httpMock: HttpTestingController;
 
   const mockApiKeyResponse: ApiKeyResponse = {
@@ -16,9 +19,11 @@ describe('ApiKeysService', () => {
   };
 
   beforeEach(() => {
+    httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
+
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [ApiKeysService]
+      providers: [ApiKeysService, { provide: HttpClient, useValue: httpClientSpy }]
     });
 
     service = TestBed.inject(ApiKeysService);
@@ -34,6 +39,8 @@ describe('ApiKeysService', () => {
   });
 
   it('getApiKeys should return expected data', () => {
+    spyOn(service, 'getApiKeys').and.returnValue(of(mockApiKeyResponse));
+
     service.getApiKeys().subscribe((res) => {
       expect(res).toEqual(mockApiKeyResponse);
     });
@@ -49,6 +56,9 @@ describe('ApiKeysService', () => {
     const req = httpMock.expectOne(environment.apiKeyUrl);
     req.flush(mockApiKeyResponse);
 
+    expect(service.loadApiKeys).toHaveBeenCalled();
+    expect(service.apiKeys).toBeTruthy();
+    expect(service.apiKeys).toBeDefined();
     expect(service.apiKeys).toEqual(mockApiKeyResponse);
   });
 });

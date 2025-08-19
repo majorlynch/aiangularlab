@@ -23,7 +23,6 @@ export class ImageGenAiComponent {
 
   async generateImage() {
     this.isLoadingAIResponse = true;
-        await sleep(2000);
     this.imageGenService.getChatGPTImageURL(this.imageGenInstruction, this.selectedModel)
     .pipe(finalize(() => {this.isLoadingAIResponse = false}))
     .subscribe(res => {this.imageSrc = res});

@@ -5,7 +5,7 @@ import { of, from } from 'rxjs';
 import { ChatService } from './chat-services'; // Replace with actual service name
 import { environment } from '@environment/environment'; // Adjust path
 import { MockChatService } from './mocks/mock-chat-service'; // Adjust path
-import { ChatHistory, ChatResponseType } from '@models/chat.models';
+import { ChatHistory, ChatResponseType, TextPrompt } from '@models/chat.models';
 
 describe('ChatService', () => {
   let service: ChatService;
@@ -37,8 +37,10 @@ describe('ChatService', () => {
 
   it('should send POST request in getGeminiChatPromise', () => {
     const chatPrompt = 'Hello';
-    const userHistory: ChatHistory[] = [{role: 'user', content: 'Hi there'}];
-    const aiHistory: ChatHistory[] = [{role: 'assistant', content: 'Hi there'}];
+    //const userHistory: ChatHistory[] = [{role: 'user', content: 'Hi there'}];
+    //const aiHistory: ChatHistory[] = [{role: 'assistant', content: 'Hi there'}];
+    const userHistory: TextPrompt[] = [{text: 'Hi there'}];
+    const aiHistory: TextPrompt[] = [{text: 'Hi there'}];
 
     service.getGeminiChatPromise(chatPrompt, userHistory, aiHistory).subscribe((res) => {
       expect(res).toEqual(mockResponse);
